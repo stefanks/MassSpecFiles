@@ -1,7 +1,7 @@
 language: csharp
 solution: MassSpecFiles.sln
 install:
-  - wget "https://download.flexnetoperations.com/439214/thmo/737/9908737/MSFileReader_x64.exe?ftpRequestID=4071576197&server=download.flexnetoperations.com&dtm=DTM20160602221807Njk4OTE4Mw==&authparam=1464931087_2619dfc195df07b78d7b8ee4d168d778&ext=.exe"
+  - wget "https://download.flexnetoperations.com/439214/thmo/737/9908737/MSFileReader_x64.exe?ftpRequestID=4071576197&server=download.flexnetoperations.com&dtm=DTM20160602221807Njk4OTE4Mw==&authparam=1464931087_2619dfc195df07b78d7b8ee4d168d778&ext=.exe" -outfile "MSFileReader_x64.exe"
   - mono ./MSFileReader_x64.exe /s /sms
   - nuget restore MassSpecFiles.sln
   - nuget install NUnit.Console -OutputDirectory testrunner
