@@ -17,7 +17,7 @@
 
 using Spectra;
 
-namespace CSMSL.IO.Thermo
+namespace IO.Thermo
 {
     public class ThermoMzPeak : MzPeak
     {

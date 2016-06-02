@@ -27,7 +27,7 @@ using MassSpectrometry;
 using Spectra;
 using MathNet.Numerics.Statistics;
 
-namespace CSMSL.IO.Thermo
+namespace IO.Thermo
 {
     public class ThermoRawFile : MsDataFile<ThermoSpectrum>
     {
