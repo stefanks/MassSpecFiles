@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://www.gnu.org/licenses/lgpl-3.0.txt</licenseUrl>
+    <projectUrl>https://github.com/stefanks/MassSpecFiles</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Clean version</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>Chemistry Spectrometry</tags>
+  </metadata>
+  <files>
+    <file src="MzML\bin\Release\MzML.dll" target="lib" /> 
+    <file src="Thermo\bin\Release\Thermo.dll" target="lib" /> 
+  </files>
+</package>
