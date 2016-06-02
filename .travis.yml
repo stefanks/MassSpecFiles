@@ -1,0 +1,9 @@
+language: csharp
+solution: MassSpecFiles.sln
+install:
+  - nuget restore MassSpecFiles.sln
+  - nuget install NUnit.Console -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Debug MassSpecFilesChemistry.sln 
+  - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./Test/bin/Debug/Test.dll
+  - xbuild /p:Configuration=Release MassSpecFilesChemistry.sln 

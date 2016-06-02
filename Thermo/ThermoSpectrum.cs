@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using Spectra;
 
-namespace CSMSL.IO.Thermo
+namespace IO.Thermo
 {
     /// <summary>
     /// A high resolution spectra from a Thermo raw file

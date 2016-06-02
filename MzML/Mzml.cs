@@ -25,7 +25,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-namespace CSMSL.IO.MzML
+namespace IO.MzML
 {
     public class Mzml : MsDataFile<DefaultMzSpectrum>
     {
@@ -664,8 +664,8 @@ namespace CSMSL.IO.MzML
             // ToDo: Finish the chromatogram writing!
             _indexedmzMLConnection.mzML.run.chromatogramList = new ChromatogramListType();
             _indexedmzMLConnection.mzML.run.chromatogramList.count = "1";
-            _indexedmzMLConnection.mzML.run.chromatogramList.chromatogram = new CSMSL.IO.MzML.ChromatogramType[1];
-            _indexedmzMLConnection.mzML.run.chromatogramList.chromatogram[0] = new CSMSL.IO.MzML.ChromatogramType();
+            _indexedmzMLConnection.mzML.run.chromatogramList.chromatogram = new ChromatogramType[1];
+            _indexedmzMLConnection.mzML.run.chromatogramList.chromatogram[0] = new ChromatogramType();
 
             _indexedmzMLConnection.mzML.run.spectrumList = new SpectrumListType();
             _indexedmzMLConnection.mzML.run.spectrumList.count = (myMsDataFile.LastSpectrumNumber).ToString();
@@ -883,8 +883,8 @@ namespace CSMSL.IO.MzML
             // ToDo: Finish the chromatogram writing!
             _indexedmzMLConnection.mzML.run.chromatogramList = new ChromatogramListType();
             _indexedmzMLConnection.mzML.run.chromatogramList.count = "1";
-            _indexedmzMLConnection.mzML.run.chromatogramList.chromatogram = new CSMSL.IO.MzML.ChromatogramType[1];
-            _indexedmzMLConnection.mzML.run.chromatogramList.chromatogram[0] = new CSMSL.IO.MzML.ChromatogramType();
+            _indexedmzMLConnection.mzML.run.chromatogramList.chromatogram = new ChromatogramType[1];
+            _indexedmzMLConnection.mzML.run.chromatogramList.chromatogram[0] = new ChromatogramType();
 
             _indexedmzMLConnection.mzML.run.spectrumList = new SpectrumListType();
             _indexedmzMLConnection.mzML.run.spectrumList.count = (myMsDataFile.LastSpectrumNumber- myMsDataFile.FirstSpectrumNumber+1).ToString();

@@ -7,8 +7,8 @@
     <ProjectGuid>{012434FB-88A9-4DEC-B887-5F64C0B481D4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSMSL.IO.MzML</RootNamespace>
-    <AssemblyName>CSMSL.MzML</AssemblyName>
+    <RootNamespace>IO.MzML</RootNamespace>
+    <AssemblyName>MzML</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
@@ -24,15 +24,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x64</PlatformTarget>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x64</PlatformTarget>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -98,16 +101,16 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Chemistry, Version=1.0.8.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\Chemistry.1.0.8\lib\net451\Chemistry.dll</HintPath>
+    <Reference Include="Chemistry, Version=1.0.27.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\Chemistry.1.0.27\lib\net451\Chemistry.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MassSpectrometry, Version=1.0.46.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\MassSpectrometry.1.0.46\lib\net451\MassSpectrometry.dll</HintPath>
+    <Reference Include="MassSpectrometry, Version=1.0.52.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\SoftwareLockMass\packages\MassSpectrometry.1.0.52\lib\net451\MassSpectrometry.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Spectra, Version=1.0.46.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\MassSpectrometry.1.0.46\lib\net451\Spectra.dll</HintPath>
+    <Reference Include="Spectra, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\SoftwareLockMass\packages\MassSpectrometry.1.0.52\lib\net451\Spectra.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -115,7 +118,7 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="Zlib.Portable, Version=1.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zlib.Portable.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
+      <HintPath>..\..\SoftwareLockMass\packages\Zlib.Portable.1.11.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
