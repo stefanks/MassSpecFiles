@@ -1,0 +1,31 @@
+[InstallShield Silent]
+Version=v7.00
+File=Response File
+[File Transfer]
+OverwrittenReadOnly=NoToAll
+[{42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-DlgOrder]
+Dlg0={42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdWelcome-0
+Count=5
+Dlg1={42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdLicense2Rtf-0
+Dlg2={42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdRegisterUser-0
+Dlg3={42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdStartCopy2-0
+Dlg4={42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdFinish-0
+[{42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdWelcome-0]
+Result=1
+[{42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdLicense2Rtf-0]
+Result=1
+[{42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdRegisterUser-0]
+szName=dummy
+szCompany=dummy
+Result=1
+[{42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdStartCopy2-0]
+Result=1
+[Application]
+Name=Thermo MSFileReader_x64
+Version=3.1.0
+Company=Thermo Fisher Scientific Inc.
+Lang=0409
+[{42E0F80F-4BA6-402B-97AC-CAB2ABAA5091}-SdFinish-0]
+Result=1
+bOpt1=0
+bOpt2=0
