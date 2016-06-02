@@ -15,7 +15,7 @@ namespace Test
 
 
         [Test]
-        public void GetResidueByCharacter()
+        public void LoadMzmlTest()
         {
 
             Mzml a = new Mzml(@"tiny.pwiz.1.1.mzML");

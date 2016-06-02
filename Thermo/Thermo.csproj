@@ -165,15 +165,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="MassSpectrometry, Version=1.0.52.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\SoftwareLockMass\packages\MassSpectrometry.1.0.52\lib\net451\MassSpectrometry.dll</HintPath>
+      <HintPath>..\packages\MassSpectrometry.1.0.52\lib\net451\MassSpectrometry.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=3.11.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\SoftwareLockMass\packages\MathNet.Numerics.3.11.1\lib\net40\MathNet.Numerics.dll</HintPath>
+      <HintPath>..\packages\MathNet.Numerics.3.11.1\lib\net40\MathNet.Numerics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Spectra, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\SoftwareLockMass\packages\MassSpectrometry.1.0.52\lib\net451\Spectra.dll</HintPath>
+      <HintPath>..\packages\MassSpectrometry.1.0.52\lib\net451\Spectra.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
