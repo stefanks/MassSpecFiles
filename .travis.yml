@@ -2,11 +2,11 @@ language: csharp
 solution: MassSpecFiles.sln
 install:
   - wget "https://www.dropbox.com/s/l42av5hapzqdggu/Fileio_x64.dll?dl=1" -O "Fileio_x64.dll"
-  - gacutil / i Fileio_x64.dll
+  - gacutil /i Fileio_x64.dll
   - wget "https://www.dropbox.com/s/n4mxf6ve796ex1m/fregistry_x64.dll?dl=1" -O "fregistry_x64.dll"
-  - gacutil / i fregistry_x64.dll
+  - gacutil /i fregistry_x64.dll
   - wget "https://www.dropbox.com/s/c9sg54i0srj2acd/XRawfile2_x64.dll?dl=1" -O "XRawfile2_x64.dll"
-  - gacutil / i XRawfile2_x64.dll
+  - gacutil /i XRawfile2_x64.dll
   - nuget restore MassSpecFiles.sln
   - nuget install NUnit.Console -OutputDirectory testrunner
 script:
