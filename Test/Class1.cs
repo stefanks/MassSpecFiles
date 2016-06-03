@@ -5,7 +5,7 @@ using System;
 namespace Test
 {
     [TestFixture]
-    public sealed class TestAminoAcids
+    public sealed class TestMzML
     {
         [OneTimeSetUp]
         public void setup()
