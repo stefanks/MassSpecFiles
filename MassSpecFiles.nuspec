@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <id>MassSpecFiles</id>
+    <version>0.0.1</version>
+    <title>MassSpecFiles</title>
+    <authors>Stefan S.</authors>
+    <owners>Stefan S.</owners>
     <licenseUrl>http://www.gnu.org/licenses/lgpl-3.0.txt</licenseUrl>
     <projectUrl>https://github.com/stefanks/MassSpecFiles</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>description</description>
     <releaseNotes>Clean version</releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>Chemistry Spectrometry</tags>
