@@ -18,4 +18,10 @@
     <file src="MzML\bin\Release\MzML.dll" target="lib" /> 
     <file src="Thermo\bin\Release\Thermo.dll" target="lib" /> 
   </files>
+  <dependencies>
+    <dependency id="Chemistry" version="1.0.48" />
+    <dependency id="MassSpectrometry" version="1.0.53"/>
+    <dependency id="Zlib.Portable" version="1.11.0"/>
+    <dependency id="MathNet.Numerics" version="3.11.1"/>
+  </dependencies>
 </package>
