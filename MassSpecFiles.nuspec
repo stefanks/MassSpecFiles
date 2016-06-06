@@ -23,6 +23,7 @@
   <files>
     <file src="MzML\bin\Release\MzML.dll" target="lib" /> 
     <file src="Thermo\bin\Release\Thermo.dll" target="lib" /> 
+    <file src="mzIdentML\bin\Release\mzIdentML.dll" target="lib" />
   </files>
 </package>
 
