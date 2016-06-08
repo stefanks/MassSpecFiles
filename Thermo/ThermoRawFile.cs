@@ -94,20 +94,7 @@ namespace IO.Thermo
 
             base.Open();
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_rawConnection != null)
-                {
-                    _rawConnection.Close();
-                    _rawConnection = null;
-                }
-            }
-            base.Dispose(disposing);
-        }
-
+        
         protected override int GetFirstSpectrumNumber()
         {
             int spectrumNumber = 0;

@@ -22,6 +22,13 @@ namespace TestThermo
             Assert.AreEqual(false, a.IsOpen);
             a.Open();            
             Assert.AreEqual(true, a.IsOpen);
+
+
+            var spectrum = a.GetSpectrum(53);
+
+
+            var peak = spectrum.GetBasePeak();
+            Assert.AreEqual(75501, peak.Intensity);
         }
     }
 }
