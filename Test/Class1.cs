@@ -26,6 +26,10 @@ namespace Test
 
             Assert.AreEqual(true, a.IsIndexedMzML);
             Assert.AreEqual(true, a.IsOpen);
+
+            a.GetSpectrum(1);
+
+
         }
     }
 }

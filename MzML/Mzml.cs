@@ -119,16 +119,6 @@ namespace IO.MzML
             get { return _indexedmzMLConnection != null; }
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _mzMLConnection = null;
-                _indexedmzMLConnection = null;
-            }
-            base.Dispose(disposing);
-        }
-
         public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
         {
             spectrumNumber--;
