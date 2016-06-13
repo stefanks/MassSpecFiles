@@ -35,10 +35,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Chemistry, Version=1.0.71.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\Chemistry.1.0.71\lib\net451\Chemistry.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="MassSpectrometry, Version=1.0.66.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\MassSpectrometry.1.0.66\lib\net451\MassSpectrometry.dll</HintPath>
       <Private>True</Private>
