@@ -572,7 +572,7 @@ namespace IO.MzML
             }
 
             var ok = new DefaultMzSpectrum(masses, intensities);
-            return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1));
+            return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1));
         }
     }
 
