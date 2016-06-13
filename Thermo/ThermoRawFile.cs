@@ -87,25 +87,12 @@ namespace IO.Thermo
             {
                 throw new IOException(string.Format("The MS data file {0} does not currently exist", FilePath));
             }
-
+            
             _rawConnection = (IXRawfile5) new MSFileReader_XRawfile();
             _rawConnection.Open(FilePath);
             _rawConnection.SetCurrentController(0, 1); // first 0 is for mass spectrometer
-
-            base.Open();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_rawConnection != null)
-                {
-                    _rawConnection.Close();
-                    _rawConnection = null;
-                }
-            }
-            base.Dispose(disposing);
+            
+            IsOpen = true;
         }
 
         protected override int GetFirstSpectrumNumber()
@@ -210,17 +197,10 @@ namespace IO.Thermo
             return GetSpectrum(spectrumNumber);
         }
 
-        public ThermoSpectrum GetSpectrum(int spectrumNumber, bool profileIfAvailable = false)
+        protected ThermoSpectrum GetSpectrum(int spectrumNumber, bool profileIfAvailable = false)
         {
-            bool useProfile = false;
-
-            if (profileIfAvailable)
-            {
-                int isProfile = 0;
-                _rawConnection.IsProfileScanForScanNum(spectrumNumber, ref isProfile);
-                useProfile = isProfile == 1;
-            }
-            return new ThermoSpectrum(GetLabeledData(spectrumNumber) ?? GetUnlabeledData(spectrumNumber, !useProfile));
+            //Console.WriteLine("Trying to get spectrum number" + spectrumNumber);
+            return new ThermoSpectrum(GetLabeledData(spectrumNumber) ?? GetUnlabeledData(spectrumNumber, true));
         }
 
         public IMzSpectrum<MzPeak> GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)

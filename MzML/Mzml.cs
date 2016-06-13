@@ -110,23 +110,13 @@ namespace IO.MzML
                 }
 
 
-                base.Open();
+                IsOpen = true;
             }
         }
 
         public bool IsIndexedMzML
         {
             get { return _indexedmzMLConnection != null; }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _mzMLConnection = null;
-                _indexedmzMLConnection = null;
-            }
-            base.Dispose(disposing);
         }
 
         public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
@@ -255,9 +245,7 @@ namespace IO.MzML
             string filter = GetScanFilter(spectrumNumber);
 
             string type = MZAnalyzerTypeRegex.Match(filter).Captures[0].Value;
-
-            Console.WriteLine(type);
-
+            
             switch (type)
             {
                 case "ITMS":
@@ -301,9 +289,7 @@ namespace IO.MzML
 
         public override DefaultMzSpectrum GetSpectrum(int spectrumNumber)
         {
-
-            Console.WriteLine("Getting spectrum number " + spectrumNumber);
-
+            
             spectrumNumber--; // 0-based indexing
 
             double[] masses = null;
@@ -891,13 +877,13 @@ namespace IO.MzML
             _indexedmzMLConnection.mzML.run.spectrumList.defaultDataProcessingRef = "StefanDataProcessing";
             _indexedmzMLConnection.mzML.run.spectrumList.spectrum = new SpectrumType[myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1];
             
-            Console.WriteLine("myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1 = " + (myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1));
+            //Console.WriteLine("myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1 = " + (myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1));
             // Loop over all spectra
             for (int i = 0; i < myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1; i++)
             {
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i] = new SpectrumType();
-                Console.WriteLine("i = " + i);
-                Console.WriteLine("myMsDataFile = " + myMsDataFile);
+                //Console.WriteLine("i = " + i);
+                //Console.WriteLine("myMsDataFile = " + myMsDataFile);
 
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].defaultArrayLength = myMsDataFile.GetSpectrum(i+ myMsDataFile.FirstSpectrumNumber).Count;
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].index = i.ToString();
