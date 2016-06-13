@@ -101,14 +101,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MassSpectrometry, Version=1.0.66.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\MassSpectrometry.1.0.66\lib\net451\MassSpectrometry.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Spectra, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\MassSpectrometry.1.0.66\lib\net451\Spectra.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -133,6 +125,16 @@
     <None Include="XSD\mzML1.1.1_idx.xsd">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MassSpectrometry\MassSpectrometry\MassSpectrometry.csproj">
+      <Project>{6FEBB7ED-0BE6-4493-817E-CEFD4CBE61DD}</Project>
+      <Name>MassSpectrometry</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MassSpectrometry\Spectra\Spectra.csproj">
+      <Project>{088E4FCB-D580-4BAD-A811-A1796A7666D2}</Project>
+      <Name>Spectra</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

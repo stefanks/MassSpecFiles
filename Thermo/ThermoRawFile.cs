@@ -87,11 +87,11 @@ namespace IO.Thermo
             {
                 throw new IOException(string.Format("The MS data file {0} does not currently exist", FilePath));
             }
-            
-            _rawConnection = (IXRawfile5) new MSFileReader_XRawfile();
+
+            _rawConnection = (IXRawfile5)new MSFileReader_XRawfile();
             _rawConnection.Open(FilePath);
             _rawConnection.SetCurrentController(0, 1); // first 0 is for mass spectrometer
-            
+
             IsOpen = true;
         }
 
@@ -125,22 +125,7 @@ namespace IO.Thermo
 
         public override int GetParentSpectrumNumber(int spectrumNumber)
         {
-            if (GetMsnOrder(spectrumNumber) == 1)
-                return 0;
-
-            object parentScanNumber = GetExtraValue(spectrumNumber, "Master Scan Number:");
-            int scanNumber = Convert.ToInt32(parentScanNumber);
-
-            if (scanNumber == 0)
-            {
-                int masterIndex = Convert.ToInt32(GetExtraValue(spectrumNumber, "Master Index:"));
-                if (masterIndex == 0)
-                    throw new ArgumentException("Scan Number " + spectrumNumber + " has no parent");
-                int scanIndex = Convert.ToInt32(GetExtraValue(spectrumNumber, "Scan Event:"));
-                scanNumber = spectrumNumber - scanIndex + masterIndex;
-            }
-
-            return scanNumber;
+            return Convert.ToInt32(Regex.Match(GetPrecursorID(spectrumNumber), @"\d+$").Value);
         }
 
         public string GetSofwareVersion()
@@ -156,9 +141,9 @@ namespace IO.Thermo
             object flags = null;
             int size = 0;
             string mzrange = range.Minimum.ToString("F4") + "-" + range.Maximum.ToString("F4");
-            _rawConnection.GetChroData(0, 0, 0, scanFilter, mzrange, string.Empty, 0.0, startTime, endTime, (int) smoothing, smoothingPoints, ref chro, ref flags, ref size);
-            return (double[,]) chro;
-        }       
+            _rawConnection.GetChroData(0, 0, 0, scanFilter, mzrange, string.Empty, 0.0, startTime, endTime, (int)smoothing, smoothingPoints, ref chro, ref flags, ref size);
+            return (double[,])chro;
+        }
 
         private object GetExtraValue(int spectrumNumber, string filter)
         {
@@ -192,14 +177,8 @@ namespace IO.Thermo
             return PolarityRegex.IsMatch(filter) ? Polarity.Positive : Polarity.Negative;
         }
 
-        public override ThermoSpectrum GetSpectrum(int spectrumNumber)
+        protected ThermoSpectrum GetSpectrumFromRawFile(int spectrumNumber, bool profileIfAvailable = false)
         {
-            return GetSpectrum(spectrumNumber);
-        }
-
-        protected ThermoSpectrum GetSpectrum(int spectrumNumber, bool profileIfAvailable = false)
-        {
-            //Console.WriteLine("Trying to get spectrum number" + spectrumNumber);
             return new ThermoSpectrum(GetLabeledData(spectrumNumber) ?? GetUnlabeledData(spectrumNumber, true));
         }
 
@@ -211,8 +190,8 @@ namespace IO.Thermo
             int arraySize = 0;
             int c, d, e, f;
             c = d = e = f = 0;
-            _rawConnection.GetAverageMassList(ref firstSpectrumNumber, ref lastSpectrumNumber, ref c, ref d, ref e, ref f, scanFilter, (int) type, intensityCutoff, 0, 0, ref peakWidth, ref labels, ref flags, ref arraySize);
-            double[,] spectrum = (double[,]) labels;
+            _rawConnection.GetAverageMassList(ref firstSpectrumNumber, ref lastSpectrumNumber, ref c, ref d, ref e, ref f, scanFilter, (int)type, intensityCutoff, 0, 0, ref peakWidth, ref labels, ref flags, ref arraySize);
+            double[,] spectrum = (double[,])labels;
             return new ThermoSpectrum(spectrum, arraySize);
         }
 
@@ -222,28 +201,6 @@ namespace IO.Thermo
             return new ThermoSpectrum(labelData);
         }
 
-        //public IMzSpectrum<MzPeak> GetSNSpectrum(int spectrumNumber, double minSN = 3)
-        //{
-        //    var labelData = GetLabeledData(spectrumNumber);
-        //    int count = labelData.GetLength(1);
-        //    double[] mz = new double[count];
-        //    double[] sns = new double[count];
-        //    int j = 0;
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        double sn = labelData[1, i]/labelData[4, i];
-        //        if (sn >= minSN)
-        //        {
-        //            mz[j] = labelData[0, i];
-        //            sns[j] = sn;
-        //            j++;
-        //        }
-        //    }
-        //    Array.Resize(ref mz, j);
-        //    Array.Resize(ref sns, j);
-        //    return new ThermoSpectrum(mz, sns, false);
-        //}
-
         private double[,] GetUnlabeledData(int spectrumNumber, bool useCentroid)
         {
             object massList = null;
@@ -251,7 +208,7 @@ namespace IO.Thermo
             int arraySize = -1;
             double centroidPeakWidth = 0.001;
             _rawConnection.GetMassListFromScanNum(ref spectrumNumber, null, 0, 0, 0, Convert.ToInt32(useCentroid), ref centroidPeakWidth, ref massList, ref peakFlags, ref arraySize);
-            return (double[,]) massList;
+            return (double[,])massList;
         }
 
         private double[,] GetLabeledData(int spectrumNumber)
@@ -268,7 +225,7 @@ namespace IO.Thermo
             int mzanalyzer = 0;
             _rawConnection.GetMassAnalyzerTypeForScanNum(spectrumNumber, ref mzanalyzer);
 
-            switch ((ThermoMzAnalyzer) mzanalyzer)
+            switch ((ThermoMzAnalyzer)mzanalyzer)
             {
                 case ThermoMzAnalyzer.FTMS:
                     return MZAnalyzerType.Orbitrap;
@@ -362,7 +319,7 @@ namespace IO.Thermo
         {
             int type = 0;
             _rawConnection.GetActivationTypeForScanNum(spectrumNumber, msnOrder, ref type);
-            return (DissociationType) type;
+            return (DissociationType)type;
         }
 
         public override MzRange GetMzRange(int spectrumNumber)
@@ -388,7 +345,7 @@ namespace IO.Thermo
         public override int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
         {
             short charge = Convert.ToInt16(GetExtraValue(spectrumNumber, "Charge State:"));
-            return charge*(int) GetPolarity(spectrumNumber);
+            return charge * (int)GetPolarity(spectrumNumber);
         }
 
         public override int GetSpectrumNumber(double retentionTime)
@@ -431,12 +388,12 @@ namespace IO.Thermo
 
                             for (int i = 0; i < totalPeaks; i++)
                             {
-                                double signalToNoise = data[1, i]/data[4, i];
+                                double signalToNoise = data[1, i] / data[4, i];
                                 if (signalToNoise >= 5)
                                 {
                                     double mz = data[0, i];
                                     double peakRes = data[2, i];
-                                    double correctedResolution = peakRes*Math.Sqrt(mz/200);
+                                    double correctedResolution = peakRes * Math.Sqrt(mz / 200);
                                     avgResolution.Add(correctedResolution);
                                 }
                             }
@@ -545,7 +502,7 @@ namespace IO.Thermo
             //ref double pdEndTime, int nSmoothingType, int nSmoothingValue, ref object pvarChroData, ref object pvarPeakFlags, ref int pnArraySize);
             _rawConnection.GetChroData(nChroType1, nChroOperator, nChroType2, bstrFilter, bstrMassRanges1, bstrMassRanges2, dDelay, dStartTime, dEndTime, nSmoothingType, nSmoothingValue, ref pvarChroData, ref pvarPeakFlags, ref pnArraySize);
 
-            double[,] pvarArray = (double[,]) pvarChroData;
+            double[,] pvarArray = (double[,])pvarChroData;
 
             return new Chromatogram(pvarArray);
         }
@@ -580,37 +537,12 @@ namespace IO.Thermo
         {
             double mz = -1;
             _rawConnection.GetPrecursorMassForScanNum(scanNumber, 2, ref mz);
-            scanNumber--;
-            while (scanNumber >= 1)
-            {
-                string scan_filter = null;
-                _rawConnection.GetFilterForScanNum(scanNumber, ref scan_filter);
-
-                // Check if it's MS1, 
-                if (scan_filter.Contains(" ms "))
-                {
-                    double[,] ms1;
-                    object labels_obj = null;
-                    object flags_obj = null;
-                    _rawConnection.GetLabelData(ref labels_obj, ref flags_obj, ref scanNumber);
-                    ms1 = (double[,])labels_obj;
-
-                    int index = -1;
-                    for (int i = ms1.GetLowerBound(1); i <= ms1.GetUpperBound(1); i++)
-                    {
-                        if (index < 0 || Math.Abs(ms1[0, i] - mz) < Math.Abs(ms1[0, index] - mz))
-                            index = i;
-                    }
-                    return ms1[1, index];
-                }
-                scanNumber--;
-            }
-            return -1;
+            return GetSpectrum(GetPrecursor(scanNumber)).GetClosestPeak(mz).Intensity;
         }
 
         private int GetPrecursor(int spectrumNumber)
         {
-            int ms_order=-1;
+            int ms_order = -1;
             while (spectrumNumber >= 1)
             {
                 _rawConnection.GetMSOrderForScanNum(spectrumNumber, ref ms_order);
@@ -629,6 +561,15 @@ namespace IO.Thermo
         public override MzRange GetIsolationRange(int spectrumNumber)
         {
             throw new NotImplementedException();
+        }
+
+        protected override MsDataScan<ThermoSpectrum> GetMsDataScanFromFile(int spectrumNumber)
+        {
+            var precursorID = GetPrecursorID(spectrumNumber);
+            if (precursorID.Equals(GetSpectrumID(spectrumNumber)))
+                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber));
+            else
+                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), precursorID, GetPrecursorMonoisotopicMz(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber));
         }
     }
 }

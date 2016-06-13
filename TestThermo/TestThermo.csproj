@@ -35,10 +35,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MassSpectrometry, Version=1.0.66.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\MassSpectrometry.1.0.66\lib\net451\MassSpectrometry.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit3TestAdapter.3.2.0\lib\Mono.Cecil.dll</HintPath>
       <Private>False</Private>
@@ -58,10 +54,6 @@
     <Reference Include="NUnit3.TestAdapter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=4cb40d35494691ac, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit3TestAdapter.3.2.0\lib\NUnit3.TestAdapter.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="Spectra, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\MassSpectrometry.1.0.66\lib\net451\Spectra.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -87,6 +79,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MassSpectrometry\MassSpectrometry\MassSpectrometry.csproj">
+      <Project>{6FEBB7ED-0BE6-4493-817E-CEFD4CBE61DD}</Project>
+      <Name>MassSpectrometry</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MassSpectrometry\Spectra\Spectra.csproj">
+      <Project>{088E4FCB-D580-4BAD-A811-A1796A7666D2}</Project>
+      <Name>Spectra</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MzML\MzML.csproj">
+      <Project>{012434FB-88A9-4DEC-B887-5F64C0B481D4}</Project>
+      <Name>MzML</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Thermo\Thermo.csproj">
       <Project>{24DC85FF-E97B-4140-9614-77DD8FDDD32F}</Project>
       <Name>Thermo</Name>
