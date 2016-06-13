@@ -193,7 +193,7 @@ namespace IO.MzML
             }
             if (double.IsNaN(low) || double.IsNaN(high))
             {
-                throw new ArgumentNullException("Could not MZ range for " + spectrumNumber + 1);
+                throw new ArgumentNullException("Could not find MZ range for " + spectrumNumber + 1);
             }
             return new MzRange(low, high);
         }
@@ -430,18 +430,6 @@ namespace IO.MzML
             {
 
                 bytes = ZlibStream.UncompressBuffer(bytes);
-
-                //using (var mem = new MemoryStream())
-                //{
-                //    \\Console.WriteLine("Compressed");
-                //    //the trick is here, horrible hack
-                //    // From http://stackoverflow.com/questions/19364497/how-to-tell-if-a-byte-array-is-gzipped
-                //    if (!(bytes.Length >= 2 && bytes[0] == 31 && bytes[1] == 139))
-                //        mem.Write(new byte[] { 0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00 }, 0, 8);
-                //    mem.Write(bytes, 0, bytes.Length);
-
-                //    bytes = mem.ToArray().Decompress();
-                //}
             }
 
             int size = is32bit ? sizeof(float) : sizeof(double);
@@ -584,7 +572,7 @@ namespace IO.MzML
             }
 
             var ok = new DefaultMzSpectrum(masses, intensities);
-            return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1));
+            return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1));
         }
     }
 
@@ -817,7 +805,7 @@ namespace IO.MzML
         public static void CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(IMsDataFile<IMzSpectrum<MzPeak>> myMsDataFile)
         {
 
-            \\Console.WriteLine("In CreateAndWriteMyIndexedMZmlwithCalibratedSpectra");
+            //Console.WriteLine("In CreateAndWriteMyIndexedMZmlwithCalibratedSpectra");
 
             indexedmzML _indexedmzMLConnection = new indexedmzML();
             _indexedmzMLConnection.mzML = new mzMLType();
@@ -842,7 +830,7 @@ namespace IO.MzML
             _indexedmzMLConnection.mzML.softwareList = new SoftwareListType();
             _indexedmzMLConnection.mzML.softwareList.count = "1";
 
-            \\Console.WriteLine("oikay");
+            //Console.WriteLine("oikay");
 
             _indexedmzMLConnection.mzML.softwareList.software = new SoftwareType[1];
             // For a RAW file!!!
@@ -889,13 +877,13 @@ namespace IO.MzML
             _indexedmzMLConnection.mzML.run.spectrumList.defaultDataProcessingRef = "StefanDataProcessing";
             _indexedmzMLConnection.mzML.run.spectrumList.spectrum = new SpectrumType[myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1];
 
-            \\Console.WriteLine("mymsdatafile.lastspectrumnumber - mymsdatafile.firstspectrumnumber + 1 = " + (myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1));
+            //Console.WriteLine("mymsdatafile.lastspectrumnumber - mymsdatafile.firstspectrumnumber + 1 = " + (myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1));
             // Loop over all spectra
             for (int i = 0; i < myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1; i++)
             {
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i] = new SpectrumType();
 
-                \\Console.WriteLine("i = " + i);
+                //Console.WriteLine("i = " + i);
 
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].defaultArrayLength = myMsDataFile.GetSpectrum(i + myMsDataFile.FirstSpectrumNumber).Count;
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].index = i.ToString();
@@ -905,7 +893,7 @@ namespace IO.MzML
 
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[0] = new CVParamType();
 
-                \\Console.WriteLine(i + myMsDataFile.FirstSpectrumNumber);
+                //Console.WriteLine(i + myMsDataFile.FirstSpectrumNumber);
                 if (myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MsnOrder == 1)
                 {
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[0].accession = "MS:1000579";
