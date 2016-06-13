@@ -1,4 +1,5 @@
-﻿using IO.Thermo;
+﻿using IO.MzML;
+using IO.Thermo;
 using NUnit.Framework;
 using System;
 
@@ -17,18 +18,17 @@ namespace TestThermo
         [Test]
         public void LoadThermoTest()
         {
-            Console.WriteLine(Environment.CurrentDirectory);
             ThermoRawFile a = new ThermoRawFile(@"Shew_246a_LCQa_15Oct04_Andro_0904-2_4-20.RAW");
             Assert.AreEqual(false, a.IsOpen);
-            a.Open();            
+            a.Open();
             Assert.AreEqual(true, a.IsOpen);
-
 
             var spectrum = a.GetSpectrum(53);
 
-
             var peak = spectrum.GetBasePeak();
             Assert.AreEqual(75501, peak.Intensity);
+
+            MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(a);
         }
     }
 }

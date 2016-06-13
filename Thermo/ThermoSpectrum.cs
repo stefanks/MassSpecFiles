@@ -250,7 +250,7 @@ namespace IO.Thermo
                 Array.Resize(ref noises, j);
                 Array.Resize(ref charges, j);
             }
-
+            
             return new ThermoSpectrum(mz, intensities, noises, charges, resolutions, false);
         }
         
