@@ -35,34 +35,34 @@ namespace IO.Thermo
         private readonly double[] _noises;
         private readonly double[] _resolutions;
         private readonly int[] _charges;
-        
+
         public bool IsHighResolution { get { return _charges != null; } }
-        
+
         internal ThermoSpectrum(double[,] peakData, int count)
             : base(peakData, count)
         {
             int arrayLength = peakData.GetLength(1);
             int depthLength = peakData.GetLength(0);
-            if (depthLength <= 2) 
+            if (depthLength <= 2)
                 return;
             _noises = new double[Count];
             _resolutions = new double[Count];
             var charges = new double[Count];
 
-            Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.Resolution, _resolutions, 0, sizeof (double)*Count);
-            Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.NoiseLevel, _noises, 0, sizeof (double)*Count);
-            Buffer.BlockCopy(peakData, sizeof (double)*arrayLength*(int) ThermoRawFile.RawLabelDataColumn.Charge, charges, 0, sizeof (double)*Count);
+            Buffer.BlockCopy(peakData, sizeof(double) * arrayLength * (int)ThermoRawFile.RawLabelDataColumn.Resolution, _resolutions, 0, sizeof(double) * Count);
+            Buffer.BlockCopy(peakData, sizeof(double) * arrayLength * (int)ThermoRawFile.RawLabelDataColumn.NoiseLevel, _noises, 0, sizeof(double) * Count);
+            Buffer.BlockCopy(peakData, sizeof(double) * arrayLength * (int)ThermoRawFile.RawLabelDataColumn.Charge, charges, 0, sizeof(double) * Count);
 
             _charges = new int[Count];
             for (int i = 0; i < Count; i++)
             {
-                _charges[i] = (int) charges[i];
+                _charges[i] = (int)charges[i];
             }
         }
 
         public ThermoSpectrum(byte[] mzintensities)
         {
-            int size = sizeof (double)* mzintensities.Length / (sizeof(double) * 2);
+            int size = sizeof(double) * mzintensities.Length / (sizeof(double) * 2);
             Masses = new double[mzintensities.Length / (sizeof(double) * 2)];
             Intensities = new double[mzintensities.Length / (sizeof(double) * 2)];
             Buffer.BlockCopy(mzintensities, 0, Masses, 0, size);
@@ -81,11 +81,11 @@ namespace IO.Thermo
             _resolutions = CopyData(resolutions, shouldCopy);
             _charges = CopyData(charge, shouldCopy);
         }
-        
+
         public ThermoSpectrum(ThermoSpectrum thermoSpectrum)
-            :this(thermoSpectrum.Masses, thermoSpectrum.Intensities,thermoSpectrum._noises, thermoSpectrum._charges,thermoSpectrum._resolutions)
+            : this(thermoSpectrum.Masses, thermoSpectrum.Intensities, thermoSpectrum._noises, thermoSpectrum._charges, thermoSpectrum._resolutions)
         {
-            
+
         }
 
         public ThermoSpectrum()
@@ -104,7 +104,7 @@ namespace IO.Thermo
             double noise = _noises[index];
             if (Math.Abs(noise) < 1e-25)
                 return 0;
-            return Intensities[index]/noise;
+            return Intensities[index] / noise;
         }
 
         public int GetCharge(int index)
@@ -134,7 +134,7 @@ namespace IO.Thermo
 
         public override ThermoMzPeak GetPeak(int index)
         {
-            return IsHighResolution ? new ThermoMzPeak(Masses[index], Intensities[index], _charges[index], _noises[index], _resolutions[index]) 
+            return IsHighResolution ? new ThermoMzPeak(Masses[index], Intensities[index], _charges[index], _noises[index], _resolutions[index])
                 : new ThermoMzPeak(Masses[index], Intensities[index]);
         }
 
@@ -153,22 +153,22 @@ namespace IO.Thermo
         public override double[,] ToArray()
         {
             double[,] data = new double[5, Count];
-            const int size = sizeof (double);
-            int bytesToCopy = size*Count;
+            const int size = sizeof(double);
+            int bytesToCopy = size * Count;
             Buffer.BlockCopy(Masses, 0, data, 0, bytesToCopy);
             Buffer.BlockCopy(Intensities, 0, data, bytesToCopy, bytesToCopy);
-            Buffer.BlockCopy(_resolutions, 0, data, (int) ThermoRawFile.RawLabelDataColumn.Resolution*bytesToCopy, bytesToCopy);
-            Buffer.BlockCopy(_noises, 0, data, (int) ThermoRawFile.RawLabelDataColumn.NoiseLevel*bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(_resolutions, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Resolution * bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(_noises, 0, data, (int)ThermoRawFile.RawLabelDataColumn.NoiseLevel * bytesToCopy, bytesToCopy);
 
             double[] charges = new double[Count];
             for (int i = 0; i < Count; i++)
             {
                 charges[i] = _charges[i];
             }
-            Buffer.BlockCopy(charges, 0, data, (int) ThermoRawFile.RawLabelDataColumn.Charge*bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(charges, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Charge * bytesToCopy, bytesToCopy);
             return data;
         }
-        
+
         public override ThermoSpectrum Extract(double minMZ, double maxMZ)
         {
             if (Count == 0)
@@ -184,17 +184,22 @@ namespace IO.Thermo
             double[] noises = new double[count];
             double[] resolutions = new double[count];
             int j = 0;
-            
+
             while (index < Count && Masses[index] <= maxMZ)
             {
                 mz[j] = Masses[index];
                 intensity[j] = Intensities[index];
-                charges[j] = _charges[index];
-                noises[j] = _noises[index];
-                resolutions[j] = _resolutions[index];
+                if (_charges != null)
+                    charges[j] = _charges[index];
+                if (_noises != null)
+                    noises[j] = _noises[index];
+                if (_resolutions != null)
+                    resolutions[j] = _resolutions[index];
                 index++;
                 j++;
             }
+
+
 
             if (j == 0)
                 return Empty;
@@ -204,14 +209,14 @@ namespace IO.Thermo
             Array.Resize(ref charges, j);
             Array.Resize(ref noises, j);
             Array.Resize(ref resolutions, j);
-            return new ThermoSpectrum(mz, intensity, noises, charges, resolutions, false);
+            return new ThermoSpectrum(mz, intensity, _noises == null ? null : noises, _charges == null ? null : charges, _resolutions == null ? null : resolutions, false);
         }
-        
+
         public override ThermoSpectrum Clone()
         {
             return new ThermoSpectrum(this);
         }
-        
+
         public override ThermoSpectrum FilterByIntensity(double minIntensity = 0, double maxIntensity = double.MaxValue)
         {
             if (Count == 0)
@@ -232,9 +237,12 @@ namespace IO.Thermo
                 {
                     mz[j] = Masses[i];
                     intensities[j] = intensity;
-                    resolutions[j] = _resolutions[i];
-                    charges[j] = _charges[i];
-                    noises[j] = _noises[i];
+                    if (_resolutions != null)
+                        resolutions[j] = _resolutions[i];
+                    if (_charges != null)
+                        charges[j] = _charges[i];
+                    if (_noises != null)
+                        noises[j] = _noises[i];
                     j++;
                 }
             }
@@ -250,10 +258,10 @@ namespace IO.Thermo
                 Array.Resize(ref noises, j);
                 Array.Resize(ref charges, j);
             }
-            
-            return new ThermoSpectrum(mz, intensities, noises, charges, resolutions, false);
+
+            return new ThermoSpectrum(mz, intensities, _noises == null ? null : noises, _charges == null ? null : charges, _resolutions == null ? null : resolutions, false);
         }
-        
+
         public override ThermoSpectrum FilterByMZ(IEnumerable<IRange<double>> mzRanges)
         {
             throw new NotImplementedException();
@@ -319,7 +327,7 @@ namespace IO.Thermo
             //HashSet<int> indiciesToRemove = new HashSet<int>();
 
             //int index = GetPeakIndex(minMZ);
-          
+
             //while (index < count && Masses[index] <= maxMZ)
             //{
             //    indiciesToRemove.Add(index);
