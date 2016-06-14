@@ -14,7 +14,6 @@
     <copyright>Copyright 2016</copyright>
     <tags>Chemistry Spectrometry</tags>
     <dependencies>
-      <dependency id="Chemistry" version="1.0.48" />
       <dependency id="MassSpectrometry" version="1.0.53"/>
       <dependency id="Zlib.Portable" version="1.11.0"/>
       <dependency id="MathNet.Numerics" version="3.11.1"/>
