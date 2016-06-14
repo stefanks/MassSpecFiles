@@ -234,7 +234,8 @@ namespace IO.MzML
                     return cv.value;
                 }
             }
-            throw new ArgumentNullException("Could not get scan filter for " + spectrumNumber + 1);
+            // Not a problem if null, scan filter is optional!
+            return null;
         }
 
         private static readonly Regex MZAnalyzerTypeRegex = new Regex(@"^[a-zA-Z]*", RegexOptions.Compiled);

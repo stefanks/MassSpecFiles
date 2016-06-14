@@ -1,6 +1,7 @@
 ﻿using IO.MzML;
 using IO.Thermo;
 using NUnit.Framework;
+using Spectra;
 using System;
 
 namespace TestThermo
@@ -37,6 +38,9 @@ namespace TestThermo
 
             var peak = spectrum.GetBasePeak();
             Assert.AreEqual(75501, peak.Intensity);
+
+            Assert.AreEqual(1, spectrum.FilterByIntensity(7.5e4).Count);
+            Assert.AreEqual(2, spectrum.Extract(new DoubleRange(923, 928)).Count);
 
             MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(a);
         }
