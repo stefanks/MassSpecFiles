@@ -102,6 +102,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\mzIdentML\mzIdentML.csproj">
+      <Project>{63D869DF-55D8-4043-AD89-F90462403EBB}</Project>
+      <Name>mzIdentML</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MzML\MzML.csproj">
       <Project>{012434FB-88A9-4DEC-B887-5F64C0B481D4}</Project>
       <Name>MzML</Name>
