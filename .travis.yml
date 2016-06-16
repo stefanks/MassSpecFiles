@@ -4,6 +4,5 @@ install:
   - nuget restore MassSpecFiles.sln
   - nuget install NUnit.Console -OutputDirectory testrunner
 script:
-  - xbuild /p:Configuration=DebugNoThermo MassSpecFiles.sln 
-  - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./Test/bin/Debug/Test.dll
-  - xbuild /p:Configuration=ReleaseNoThermo MassSpecFiles.sln 
+  - xbuild /p:Configuration=ReleaseAndTestNoThermo MassSpecFiles.sln 
+  - mono ./testrunner/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./Test/bin/Release/Test.dll

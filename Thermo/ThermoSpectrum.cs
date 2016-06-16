@@ -262,104 +262,6 @@ namespace IO.Thermo
             return new ThermoSpectrum(mz, intensities, _noises == null ? null : noises, _charges == null ? null : charges, _resolutions == null ? null : resolutions, false);
         }
 
-        public override ThermoSpectrum FilterByMZ(IEnumerable<IRange<double>> mzRanges)
-        {
-            throw new NotImplementedException();
-            //if (Count == 0)
-            //    return new ThermoSpectrum();
-
-            //int count = Count;
-
-            //// Peaks to remove
-            //HashSet<int> indiciesToRemove = new HashSet<int>();
-
-            //// Loop over each range to remove
-            //foreach (IRange<double> range in mzRanges)
-            //{
-            //    double min = range.Minimum;
-            //    double max = range.Maximum;
-
-            //    int index = Array.BinarySearch(_masses, min);
-            //    if (index < 0)
-            //        index = ~index;
-
-            //    while (index < count && _masses[index] <= max)
-            //    {
-            //        indiciesToRemove.Add(index);
-            //        index++;
-            //    }
-            //}
-
-            //// The size of the cleaned MZSpectrum
-            //int cleanCount = count - indiciesToRemove.Count;
-
-            //if (cleanCount == 0)
-            //    return new ThermoSpectrum();
-
-            //// Create the storage for the cleaned MZSpectrum
-            //double[] mz = new double[cleanCount];
-            //double[] intensities = new double[cleanCount];
-
-            //// Transfer peaks from the old MZSpectrum to the new one
-            //int j = 0;
-            //for (int i = 0; i < count; i++)
-            //{
-            //    if (indiciesToRemove.Contains(i))
-            //        continue;
-            //    mz[j] = _masses[i];
-            //    intensities[j] = _intensities[i];
-            //    j++;
-            //}
-
-            //// Return a new MZSpectrum, don't bother recopying the arrays
-            //return new ThermoSpectrum(mz, intensities, false);
-        }
-
-        public override ThermoSpectrum FilterByMZ(double minMZ, double maxMZ)
-        {
-            throw new NotImplementedException();
-            //if (Count == 0)
-            //    return Empty;
-
-            //int count = Count;
-
-            //// Peaks to remove
-            //HashSet<int> indiciesToRemove = new HashSet<int>();
-
-            //int index = GetPeakIndex(minMZ);
-
-            //while (index < count && Masses[index] <= maxMZ)
-            //{
-            //    indiciesToRemove.Add(index);
-            //    index++;
-            //}
-
-
-            //// The size of the cleaned MZSpectrum
-            //int cleanCount = count - indiciesToRemove.Count;
-
-            //if (cleanCount == 0)
-            //    return Empty;
-
-            //// Create the storage for the cleaned MZSpectrum
-            //double[] mz = new double[cleanCount];
-            //double[] intensities = new double[cleanCount];
-
-            //// Transfer peaks from the old MZSpectrum to the new one
-            //int j = 0;
-            //for (int i = 0; i < count; i++)
-            //{
-            //    if (indiciesToRemove.Contains(i))
-            //        continue;
-            //    mz[j] = Masses[i];
-            //    intensities[j] = Intensities[i];
-            //    j++;
-            //}
-
-            //// Return a new MZSpectrum, don't bother recopying the arrays
-            //return new ThermoSpectrum(mz, intensities);
-        }
-
         public override ThermoSpectrum FilterByNumberOfMostIntense(int topNPeaks)
         {
             throw new NotImplementedException();
@@ -371,6 +273,16 @@ namespace IO.Thermo
             for (int i = 0; i < newSpectrum.Count; i++)
                 newSpectrum.Masses[i] = convertor(newSpectrum.Masses[i]);
             return newSpectrum;
+        }
+
+        public override ThermoSpectrum newSpectrumWithRangesRemoved(IEnumerable<IRange<double>> mzRanges)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override ThermoSpectrum newSpectrumWithRangeRemoved(double minMZ, double maxMZ)
+        {
+            throw new NotImplementedException();
         }
     }
 }
