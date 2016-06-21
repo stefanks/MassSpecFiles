@@ -217,7 +217,9 @@ namespace IO.Thermo
             object flags = null;
             _rawConnection.GetLabelData(ref labels, ref flags, ref spectrumNumber);
             double[,] data = labels as double[,];
-            return data == null || data.Length == 0 ? null : data;
+            if (data == null || data.Length == 0)
+                throw new ArgumentNullException("For spectrum number " + spectrumNumber + " the data is null!");
+            return  data;
         }
 
         public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
