@@ -183,7 +183,7 @@ namespace IO.Thermo
             {
                 return new ThermoSpectrum(GetLabeledData(spectrumNumber));
             }
-            catch (ArgumentNullException e)
+            catch (ArgumentNullException)
             {
                 return new ThermoSpectrum(GetUnlabeledData(spectrumNumber, true));
             }
