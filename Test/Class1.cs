@@ -59,7 +59,7 @@ namespace Test
             Console.WriteLine("Creating second scan");
             Scans[1] = new MsDataScan<DefaultMzSpectrum>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00002), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "second spectrum", "first spectrum", 800, 2, double.NaN);
             Console.WriteLine("Creating DefaultMsDataFile");
-            DefaultMsDataFile myMsDataFile = new DefaultMsDataFile("myFile.mzML");
+            FakeMsDataFile myMsDataFile = new FakeMsDataFile("myFile.mzML");
             Console.WriteLine("Created! Now adding scans");
             myMsDataFile.Add(Scans);
             Console.WriteLine("Added scans");

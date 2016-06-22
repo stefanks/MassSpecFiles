@@ -15,9 +15,8 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
 using Spectra;
+using System;
 
 namespace IO.Thermo
 {
@@ -25,7 +24,7 @@ namespace IO.Thermo
     /// A high resolution spectra from a Thermo raw file
     /// </summary>
     [Serializable]
-    public sealed class ThermoSpectrum : MzSpectrum<ThermoMzPeak, MzRange,ThermoSpectrum>
+    public sealed class ThermoSpectrum : MzSpectrum<ThermoMzPeak, MzRange, ThermoSpectrum>
     {
 
         private readonly double[] _noises;
@@ -74,11 +73,11 @@ namespace IO.Thermo
         }
 
         public ThermoSpectrum(ThermoSpectrum thermoSpectrum)
-            : this(thermoSpectrum.GetCopyofXarray(), thermoSpectrum.GetCopyofYarray(), thermoSpectrum._noises, thermoSpectrum._charges, thermoSpectrum._resolutions)
+            : this(thermoSpectrum.xArray, thermoSpectrum.yArray, thermoSpectrum._noises, thermoSpectrum._charges, thermoSpectrum._resolutions)
         {
 
         }
-        
+
         public double GetNoise(int index)
         {
             return IsHighResolution ? _noises[index] : 0;
@@ -119,10 +118,16 @@ namespace IO.Thermo
             return CopyData(_charges);
         }
 
-        public override ThermoMzPeak GetPeak(int index)
+        public override ThermoMzPeak this[int index]
         {
-            return IsHighResolution ? new ThermoMzPeak(Masses[index], Intensities[index], _charges[index], _noises[index], _resolutions[index])
-                : new ThermoMzPeak(Masses[index], Intensities[index]);
+            get
+            {
+                if (peakList[index] == null)
+                    peakList[index] = IsHighResolution ?
+                        new ThermoMzPeak(xArray[index], yArray[index], _charges[index], _noises[index], _resolutions[index]) :
+                        new ThermoMzPeak(xArray[index], yArray[index]);
+                return peakList[index];
+            }
         }
 
         public override byte[] ToBytes(bool zlibCompressed = false)
@@ -132,7 +137,7 @@ namespace IO.Thermo
                 double[] charges = new double[Count];
                 for (int i = 0; i < Count; i++)
                     charges[i] = _charges[i];
-                return ToBytes(zlibCompressed, Masses, Intensities, _resolutions, _noises, charges);
+                return ToBytes(zlibCompressed, Count, xArray, yArray, _resolutions, _noises, charges);
             }
             return base.ToBytes(zlibCompressed);
         }
@@ -142,8 +147,8 @@ namespace IO.Thermo
             double[,] data = new double[5, Count];
             const int size = sizeof(double);
             int bytesToCopy = size * Count;
-            Buffer.BlockCopy(Masses, 0, data, 0, bytesToCopy);
-            Buffer.BlockCopy(Intensities, 0, data, bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(xArray, 0, data, 0, bytesToCopy);
+            Buffer.BlockCopy(yArray, 0, data, bytesToCopy, bytesToCopy);
             Buffer.BlockCopy(_resolutions, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Resolution * bytesToCopy, bytesToCopy);
             Buffer.BlockCopy(_noises, 0, data, (int)ThermoRawFile.RawLabelDataColumn.NoiseLevel * bytesToCopy, bytesToCopy);
 
@@ -156,7 +161,7 @@ namespace IO.Thermo
             return data;
         }
 
-        public override ThermoSpectrum Extract(double minMZ, double maxMZ)
+        public override ThermoSpectrum newSpectrumExtract(double minMZ, double maxMZ)
         {
 
             int index = GetClosestPeakIndex(minMZ);
@@ -184,7 +189,7 @@ namespace IO.Thermo
                 j++;
             }
 
-            
+
 
             Array.Resize(ref mz, j);
             Array.Resize(ref intensity, j);
@@ -193,9 +198,9 @@ namespace IO.Thermo
             Array.Resize(ref resolutions, j);
             return new ThermoSpectrum(mz, intensity, _noises == null ? null : noises, _charges == null ? null : charges, _resolutions == null ? null : resolutions, false);
         }
-        
 
-        public override ThermoSpectrum FilterByIntensity(double minIntensity = 0, double maxIntensity = double.MaxValue)
+
+        public override ThermoSpectrum newSpectrumFilterByY(double minIntensity = 0, double maxIntensity = double.MaxValue)
         {
 
             int count = Count;
@@ -208,10 +213,10 @@ namespace IO.Thermo
             int j = 0;
             for (int i = 0; i < count; i++)
             {
-                double intensity = Intensities[i];
+                double intensity = yArray[i];
                 if (intensity >= minIntensity && intensity < maxIntensity)
                 {
-                    mz[j] = Masses[i];
+                    mz[j] = xArray[i];
                     intensities[j] = intensity;
                     if (_resolutions != null)
                         resolutions[j] = _resolutions[i];
@@ -222,7 +227,7 @@ namespace IO.Thermo
                     j++;
                 }
             }
-            
+
 
             if (j != count)
             {
@@ -235,6 +240,6 @@ namespace IO.Thermo
 
             return new ThermoSpectrum(mz, intensities, _noises == null ? null : noises, _charges == null ? null : charges, _resolutions == null ? null : resolutions, false);
         }
-        
+
     }
 }
