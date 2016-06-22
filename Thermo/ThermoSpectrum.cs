@@ -55,6 +55,11 @@ namespace IO.Thermo
             }
         }
 
+        public ThermoSpectrum(double[] mz, double[] intensity, bool ok) :this(mz, intensity, null, null, null, ok)
+        {
+
+        }
+
         public ThermoSpectrum(byte[] mzintensities) : base(mzintensities)
         {
         }
@@ -188,9 +193,7 @@ namespace IO.Thermo
                 index++;
                 j++;
             }
-
-
-
+            
             Array.Resize(ref mz, j);
             Array.Resize(ref intensity, j);
             Array.Resize(ref charges, j);
