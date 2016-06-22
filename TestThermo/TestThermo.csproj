@@ -25,8 +25,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MassSpectrometry, Version=1.0.74.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\MassSpectrometry.1.0.74\lib\net451\MassSpectrometry.dll</HintPath>
+    <Reference Include="MassSpectrometry, Version=1.0.85.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\MassSpectrometry.1.0.85\lib\net451\MassSpectrometry.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
@@ -50,7 +50,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Spectra, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\MassSpectrometry.1.0.74\lib\net451\Spectra.dll</HintPath>
+      <HintPath>..\packages\MassSpectrometry.1.0.85\lib\net451\Spectra.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

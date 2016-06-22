@@ -36,11 +36,11 @@ namespace TestThermo
 
             var spectrum = a.GetSpectrum(53);
 
-            var peak = spectrum.GetBasePeak();
+            var peak = spectrum.GetPeakWithHighestY();
             Assert.AreEqual(75501, peak.Intensity);
 
-            Assert.AreEqual(1, spectrum.FilterByIntensity(7.5e4).Count);
-            Assert.AreEqual(2, spectrum.Extract(new DoubleRange(923, 928)).Count);
+            Assert.AreEqual(1, spectrum.newSpectrumFilterByY(7.5e4).Count);
+            Assert.AreEqual(2, spectrum.newSpectrumExtract(new DoubleRange(923, 928)).Count);
 
             MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(a);
         }

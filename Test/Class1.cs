@@ -54,12 +54,12 @@ namespace Test
 
             MsDataScan<DefaultMzSpectrum>[] Scans = new MsDataScan<DefaultMzSpectrum>[2];
             Console.WriteLine("Creating first scan");
-            Scans[0] = new MsDataScan<DefaultMzSpectrum>(1, MS1.CorrectMasses(b => b + 0.00001 * b + 0.00001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new DoubleRange(300, 2000), "first spectrum");
+            Scans[0] = new MsDataScan<DefaultMzSpectrum>(1, MS1.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new MzRange(300, 2000), "first spectrum");
 
             Console.WriteLine("Creating second scan");
-            Scans[1] = new MsDataScan<DefaultMzSpectrum>(2, MS2.CorrectMasses(b => b + 0.00001 * b + 0.00002), "spectrum 2", 2, false, Polarity.Positive, 2.0, new DoubleRange(100, 1500), "second spectrum", "first spectrum", 800, 2, double.NaN);
+            Scans[1] = new MsDataScan<DefaultMzSpectrum>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00002), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "second spectrum", "first spectrum", 800, 2, double.NaN);
             Console.WriteLine("Creating DefaultMsDataFile");
-            DefaultMsDataFile myMsDataFile = new DefaultMsDataFile("myFile.mzML");
+            FakeMsDataFile myMsDataFile = new FakeMsDataFile("myFile.mzML");
             Console.WriteLine("Created! Now adding scans");
             myMsDataFile.Add(Scans);
             Console.WriteLine("Added scans");
@@ -94,15 +94,15 @@ namespace Test
             double[] intensities;
             isodist.CalculateDistribuition(f, out masses, out intensities);
             DefaultMzSpectrum massSpectrum1 = new DefaultMzSpectrum(masses, intensities);
-            massSpectrum1 = massSpectrum1.FilterByNumberOfMostIntense(5);
+            massSpectrum1 = massSpectrum1.newSpectrumFilterByNumberOfMostIntense(5);
 
             var chargeToLookAt = minCharge;
-            var correctedSpectrum = massSpectrum1.CorrectMasses(s => (s + chargeToLookAt * Constants.Proton) / chargeToLookAt);
+            var correctedSpectrum = massSpectrum1.newSpectrumApplyFunctionToX(s => (s + chargeToLookAt * Constants.Proton) / chargeToLookAt);
 
             List<double> allMasses = new List<double>();
             List<double> allIntensitiess = new List<double>();
 
-            while (correctedSpectrum.FirstMZ > lowerBound)
+            while (correctedSpectrum.FirstX > lowerBound)
             {
                 foreach (var thisPeak in correctedSpectrum)
                 {
@@ -113,7 +113,7 @@ namespace Test
                     }
                 }
                 chargeToLookAt += 1;
-                correctedSpectrum = massSpectrum1.CorrectMasses(s => (s + chargeToLookAt * Constants.Proton) / chargeToLookAt);
+                correctedSpectrum = massSpectrum1.newSpectrumApplyFunctionToX(s => (s + chargeToLookAt * Constants.Proton) / chargeToLookAt);
             }
 
             var allMassesArray = allMasses.ToArray();

@@ -16,16 +16,16 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
-using System.Linq;
+using MassSpectrometry;
+using MathNet.Numerics.Statistics;
 using MSFileReaderLib;
+using Spectra;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Globalization;
-using MassSpectrometry;
-using Spectra;
-using MathNet.Numerics.Statistics;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace IO.Thermo
 {
@@ -179,10 +179,18 @@ namespace IO.Thermo
 
         protected ThermoSpectrum GetSpectrumFromRawFile(int spectrumNumber, bool profileIfAvailable = false)
         {
-            return new ThermoSpectrum(GetLabeledData(spectrumNumber) ?? GetUnlabeledData(spectrumNumber, true));
+            try
+            {
+                return new ThermoSpectrum(GetLabeledData(spectrumNumber));
+            }
+            catch (ArgumentNullException)
+            {
+                return new ThermoSpectrum(GetUnlabeledData(spectrumNumber, true));
+            }
         }
 
-        public IMzSpectrum<MzPeak> GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
+
+        public ThermoSpectrum GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
         {
             object labels = null;
             object flags = null;
@@ -217,7 +225,9 @@ namespace IO.Thermo
             object flags = null;
             _rawConnection.GetLabelData(ref labels, ref flags, ref spectrumNumber);
             double[,] data = labels as double[,];
-            return data == null || data.Length == 0 ? null : data;
+            if (data == null || data.Length == 0)
+                throw new ArgumentNullException("For spectrum number " + spectrumNumber + " the data is null!");
+            return data;
         }
 
         public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
@@ -581,12 +591,12 @@ namespace IO.Thermo
             _rawConnection.GetScanHeaderInfoForScanNum(spectrumNumber, ref numberOfPackets, ref startTime, ref lowMass,
                 ref highMass, ref totalIonCurrent, ref basePeakMass, ref basePeakIntensity,
                 ref numberOfChannels, ref uniformTime, ref frequency);
-            DoubleRange mzRange = new DoubleRange(lowMass, highMass);
+            MzRange mzRange = new MzRange(lowMass, highMass);
 
             if (precursorID.Equals(GetSpectrumID(spectrumNumber)))
                 return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), mzRange, GetScanFilter(spectrumNumber));
             else
                 return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), mzRange, GetScanFilter(spectrumNumber), precursorID, GetPrecursorMonoisotopicMz(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber));
-            }
+        }
     }
 }
