@@ -190,7 +190,7 @@ namespace IO.Thermo
         }
 
 
-        public IMzSpectrum<MzPeak> GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
+        public ThermoSpectrum GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
         {
             object labels = null;
             object flags = null;

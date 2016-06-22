@@ -568,7 +568,7 @@ namespace IO.MzML
     public static class MzmlMethods
     {
 
-        public static void CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(IMsDataFile<IMzSpectrum<MzPeak, MzRange>> myMsDataFile, List<IMzSpectrum> calibratedSpectra = null, List<double> calibratedPrecursorMZs = null, string outputFile = null)
+        public static void CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(IMsDataFile<IMzSpectrum<MzPeak, MzRange>> myMsDataFile, List<IMzSpectrum<MzPeak, MzRange>> calibratedSpectra = null, List<double> calibratedPrecursorMZs = null, string outputFile = null)
         {
 
             //Console.WriteLine("In CreateAndWriteMyIndexedMZmlwithCalibratedSpectra");
