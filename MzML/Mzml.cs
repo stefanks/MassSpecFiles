@@ -555,13 +555,13 @@ namespace IO.MzML
                 throw new InvalidDataException("Unable to find spectral data for spectrum number " + spectrumNumber + 1);
             }
 
-            var ok = new DefaultMzSpectrum(masses, intensities);
+            var ok = new DefaultMzSpectrum(masses, intensities, false);
 
             if (GetMsnOrder(spectrumNumber + 1) == 1)
                 return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1));
             else
                 return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetPrecursorID(spectrumNumber + 1), GetPrecursorMonoisotopicMz(spectrumNumber + 1), GetPrecusorCharge(spectrumNumber + 1), GetPrecursorIsolationIntensity(spectrumNumber + 1));
-  
+
         }
 
         public override int GetParentSpectrumNumber(int spectrumNumber)

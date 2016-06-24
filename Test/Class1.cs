@@ -83,7 +83,7 @@ namespace Test
             var allIntensitiessArray = allIntensities.ToArray();
 
             Array.Sort(allMassesArray, allIntensitiessArray);
-            return new DefaultMzSpectrum(allMassesArray, allIntensitiessArray);
+            return new DefaultMzSpectrum(allMassesArray, allIntensitiessArray, false);
         }
 
         private DefaultMzSpectrum createSpectrum(ChemicalFormula f, double lowerBound, double upperBound, int minCharge)
@@ -93,7 +93,7 @@ namespace Test
             double[] masses;
             double[] intensities;
             isodist.CalculateDistribuition(f, out masses, out intensities);
-            DefaultMzSpectrum massSpectrum1 = new DefaultMzSpectrum(masses, intensities);
+            DefaultMzSpectrum massSpectrum1 = new DefaultMzSpectrum(masses, intensities, false);
             massSpectrum1 = massSpectrum1.newSpectrumFilterByNumberOfMostIntense(5);
 
             var chargeToLookAt = minCharge;
@@ -121,7 +121,7 @@ namespace Test
 
             Array.Sort(allMassesArray, allIntensitiessArray);
 
-            return new DefaultMzSpectrum(allMassesArray, allIntensitiessArray);
+            return new DefaultMzSpectrum(allMassesArray, allIntensitiessArray, false);
         }
 
 
