@@ -55,13 +55,9 @@ namespace IO.Thermo
             }
         }
 
-        public ThermoSpectrum(double[] mz, double[] intensity, bool ok) :this(mz, intensity, null, null, null, ok)
+        public ThermoSpectrum(double[] mz, double[] intensity, bool ok) : base(mz, intensity, ok)
         {
 
-        }
-
-        public ThermoSpectrum(byte[] mzintensities) : base(mzintensities)
-        {
         }
 
         internal ThermoSpectrum(double[,] peakData)
@@ -72,9 +68,31 @@ namespace IO.Thermo
         public ThermoSpectrum(double[] mz, double[] intensity, double[] noise, int[] charge, double[] resolutions, bool shouldCopy = true)
             : base(mz, intensity, shouldCopy)
         {
-            _noises = CopyData(noise, shouldCopy);
-            _resolutions = CopyData(resolutions, shouldCopy);
-            _charges = CopyData(charge, shouldCopy);
+            Console.WriteLine("In constructor!");
+            if (!shouldCopy)
+            {
+                _noises = noise;
+                _resolutions = resolutions;
+                _charges = charge;
+            }
+            else
+            {
+                if (noise != null)
+                {
+                    _noises = new double[noise.Length];
+                    Array.Copy(noise, _noises, noise.Length);
+                }
+                if (resolutions != null)
+                {
+                    _resolutions = new double[resolutions.Length];
+                    Array.Copy(resolutions, _resolutions, resolutions.Length);
+                }
+                if (charge != null)
+                {
+                    _charges = new int[charge.Length];
+                    Array.Copy(charge, _charges, charge.Length);
+                }
+            }
         }
 
         public ThermoSpectrum(ThermoSpectrum thermoSpectrum)
@@ -110,17 +128,17 @@ namespace IO.Thermo
 
         public double[] GetNoises()
         {
-            return CopyData(_noises);
+            return _noises;
         }
 
         public double[] GetResolutions()
         {
-            return CopyData(_resolutions);
+            return _resolutions;
         }
 
         public int[] GetCharges()
         {
-            return CopyData(_charges);
+            return _charges;
         }
 
         public override ThermoMzPeak this[int index]
@@ -133,18 +151,6 @@ namespace IO.Thermo
                         new ThermoMzPeak(xArray[index], yArray[index]);
                 return peakList[index];
             }
-        }
-
-        public override byte[] ToBytes(bool zlibCompressed = false)
-        {
-            if (IsHighResolution)
-            {
-                double[] charges = new double[Count];
-                for (int i = 0; i < Count; i++)
-                    charges[i] = _charges[i];
-                return ToBytes(zlibCompressed, Count, xArray, yArray, _resolutions, _noises, charges);
-            }
-            return base.ToBytes(zlibCompressed);
         }
 
         public override double[,] CopyTo2DArray()
@@ -193,7 +199,7 @@ namespace IO.Thermo
                 index++;
                 j++;
             }
-            
+
             Array.Resize(ref mz, j);
             Array.Resize(ref intensity, j);
             Array.Resize(ref charges, j);
