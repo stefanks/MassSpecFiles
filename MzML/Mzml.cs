@@ -95,7 +95,7 @@ namespace IO.MzML
                     }
                     catch (Exception)
                     {
-                        throw new InvalidDataException("Unable to parse " + FilePath + " as a mzML file!");
+                        throw new InvalidDataException("Unable to parse " + FilePath + " as an mzML file!");
                     }
                 }
             }
