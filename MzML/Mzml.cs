@@ -569,9 +569,6 @@ namespace IO.MzML
 
         public static void CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(IMsDataFile<IMzSpectrum<MzPeak>> myMsDataFile, List<IMzSpectrum<MzPeak>> calibratedSpectra = null, List<double> calibratedPrecursorMZs = null, string outputFile = null)
         {
-
-            //Console.WriteLine("In CreateAndWriteMyIndexedMZmlwithCalibratedSpectra");
-
             Generated.indexedmzML _indexedmzMLConnection = new Generated.indexedmzML();
             _indexedmzMLConnection.mzML = new Generated.mzMLType();
             _indexedmzMLConnection.mzML.version = "1";
@@ -594,8 +591,6 @@ namespace IO.MzML
 
             _indexedmzMLConnection.mzML.softwareList = new Generated.SoftwareListType();
             _indexedmzMLConnection.mzML.softwareList.count = "1";
-
-            //Console.WriteLine("oikay");
 
             _indexedmzMLConnection.mzML.softwareList.software = new Generated.SoftwareType[1];
             // For a RAW file!!!
@@ -642,14 +637,11 @@ namespace IO.MzML
             _indexedmzMLConnection.mzML.run.spectrumList.defaultDataProcessingRef = "StefanDataProcessing";
             _indexedmzMLConnection.mzML.run.spectrumList.spectrum = new Generated.SpectrumType[myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1];
 
-            //Console.WriteLine("mymsdatafile.lastspectrumnumber - mymsdatafile.firstspectrumnumber + 1 = " + (myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1));
             // Loop over all spectra
             int totalNumSpectra = calibratedSpectra == null ? myMsDataFile.LastSpectrumNumber - myMsDataFile.FirstSpectrumNumber + 1 : calibratedSpectra.Count;
             for (int i = 0; i < totalNumSpectra; i++)
             {
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i] = new Generated.SpectrumType();
-
-                //Console.WriteLine("i = " + i);
 
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].defaultArrayLength = calibratedSpectra == null ? myMsDataFile.GetSpectrum(i + myMsDataFile.FirstSpectrumNumber).Count : calibratedSpectra[i].Count;
 
@@ -660,7 +652,6 @@ namespace IO.MzML
 
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[0] = new Generated.CVParamType();
 
-                //Console.WriteLine(i + myMsDataFile.FirstSpectrumNumber);
                 if (myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MsnOrder == 1)
                 {
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[0].accession = "MS:1000579";

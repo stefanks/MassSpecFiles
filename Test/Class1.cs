@@ -42,22 +42,18 @@ namespace Test
             var peptide = new Peptide("KQEEQMETEQQNKDEGK");
 
             DefaultMzSpectrum MS1 = createSpectrum(peptide.GetChemicalFormula(), 300, 2000, 1);
-            foreach (var ok in MS1)
-                Console.WriteLine(ok);
             DefaultMzSpectrum MS2 = createMS2spectrum(peptide.Fragment(FragmentTypes.b | FragmentTypes.y, true), 100, 1500);
 
 
             MsDataScan<DefaultMzSpectrum>[] Scans = new MsDataScan<DefaultMzSpectrum>[2];
-            Console.WriteLine("Creating first scan");
             Scans[0] = new MsDataScan<DefaultMzSpectrum>(1, MS1.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new MzRange(300, 2000), "first spectrum");
 
-            Console.WriteLine("Creating second scan");
             Scans[1] = new MsDataScan<DefaultMzSpectrum>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00002), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "second spectrum", "first spectrum", 800, 2, double.NaN);
-            Console.WriteLine("Creating DefaultMsDataFile");
+
             FakeMsDataFile myMsDataFile = new FakeMsDataFile("myFile.mzML");
-            Console.WriteLine("Created! Now adding scans");
+
             myMsDataFile.Add(Scans);
-            Console.WriteLine("Added scans");
+
 
             MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(myMsDataFile);
         }

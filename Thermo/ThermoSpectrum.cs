@@ -68,7 +68,6 @@ namespace IO.Thermo
         public ThermoSpectrum(double[] mz, double[] intensity, double[] noise, int[] charge, double[] resolutions, bool shouldCopy = true)
             : base(mz, intensity, shouldCopy)
         {
-            Console.WriteLine("In constructor!");
             if (!shouldCopy)
             {
                 _noises = noise;

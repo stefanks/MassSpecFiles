@@ -183,7 +183,7 @@ namespace IO.Thermo
                 return new ThermoSpectrum(GetUnlabeledData(spectrumNumber, true));
             }
         }
-        
+
         public ThermoSpectrum GetLabeledSpectrum(int spectrumNumber)
         {
             var labelData = GetLabeledData(spectrumNumber);
@@ -246,7 +246,6 @@ namespace IO.Thermo
             string[] values = (string[])values_obj;
             for (int i = labels.GetLowerBound(0); i <= labels.GetUpperBound(0); i++)
             {
-                Console.WriteLine(labels[i]+" = " + values[i]);
                 if (labels[i].StartsWith("Monoisotopic M/Z"))
                 {
                     double monoisotopic_mz = double.Parse(values[i], CultureInfo.InvariantCulture);
@@ -315,7 +314,6 @@ namespace IO.Thermo
 
         public override MzRange GetMzRange(int spectrumNumber)
         {
-            //Console.WriteLine("Getting mz range for spectrum number " + spectrumNumber);
             int numberOfPackets = -1;
             double startTime = double.NaN;
             double lowMass = double.NaN;
