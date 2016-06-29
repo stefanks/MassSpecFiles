@@ -24,7 +24,7 @@ namespace IO.Thermo
     /// A high resolution spectra from a Thermo raw file
     /// </summary>
     [Serializable]
-    public sealed class ThermoSpectrum : MzSpectrum<ThermoMzPeak, MzRange, ThermoSpectrum>
+    public sealed class ThermoSpectrum : MzSpectrum<ThermoMzPeak, ThermoSpectrum>
     {
 
         private readonly double[] _noises;

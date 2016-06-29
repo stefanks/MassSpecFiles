@@ -69,20 +69,16 @@ namespace IO.Thermo
         private IXRawfile5 _rawConnection;
 
         public ThermoRawFile(string filePath)
-            : base(filePath, MsDataFileType.ThermoRawFile)
+            : base(filePath, true, MsDataFileType.ThermoRawFile)
         {
         }
 
         public static bool AlwaysGetUnlabeledData = false;
 
-        /// <summary>
-        /// Opens the connection to the underlying data
-        /// </summary>
         public override void Open()
         {
-            if (IsOpen && _rawConnection != null)
+            if (_rawConnection != null)
                 return;
-
             if (!File.Exists(FilePath) && !Directory.Exists(FilePath))
             {
                 throw new IOException(string.Format("The MS data file {0} does not currently exist", FilePath));
@@ -91,9 +87,8 @@ namespace IO.Thermo
             _rawConnection = (IXRawfile5)new MSFileReader_XRawfile();
             _rawConnection.Open(FilePath);
             _rawConnection.SetCurrentController(0, 1); // first 0 is for mass spectrometer
-
-            IsOpen = true;
         }
+
 
         protected override int GetFirstSpectrumNumber()
         {
@@ -188,21 +183,7 @@ namespace IO.Thermo
                 return new ThermoSpectrum(GetUnlabeledData(spectrumNumber, true));
             }
         }
-
-
-        public ThermoSpectrum GetAveragedSpectrum(int firstSpectrumNumber, int lastSpectrumNumber, string scanFilter = "", IntensityCutoffType type = IntensityCutoffType.None, int intensityCutoff = 0)
-        {
-            object labels = null;
-            object flags = null;
-            double peakWidth = 0;
-            int arraySize = 0;
-            int c, d, e, f;
-            c = d = e = f = 0;
-            _rawConnection.GetAverageMassList(ref firstSpectrumNumber, ref lastSpectrumNumber, ref c, ref d, ref e, ref f, scanFilter, (int)type, intensityCutoff, 0, 0, ref peakWidth, ref labels, ref flags, ref arraySize);
-            double[,] spectrum = (double[,])labels;
-            return new ThermoSpectrum(spectrum, arraySize);
-        }
-
+        
         public ThermoSpectrum GetLabeledSpectrum(int spectrumNumber)
         {
             var labelData = GetLabeledData(spectrumNumber);
@@ -265,6 +246,7 @@ namespace IO.Thermo
             string[] values = (string[])values_obj;
             for (int i = labels.GetLowerBound(0); i <= labels.GetUpperBound(0); i++)
             {
+                Console.WriteLine(labels[i]+" = " + values[i]);
                 if (labels[i].StartsWith("Monoisotopic M/Z"))
                 {
                     double monoisotopic_mz = double.Parse(values[i], CultureInfo.InvariantCulture);
@@ -278,7 +260,6 @@ namespace IO.Thermo
                     }
                 }
             }
-
             return -1;
         }
 
