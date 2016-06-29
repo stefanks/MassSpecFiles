@@ -76,6 +76,23 @@ namespace IO.MzML
         public Mzml(string filePath)
             : base(filePath, true, MsDataFileType.Mzml)
         {
+            Stream stream = new FileStream(FilePath, FileMode.Open);
+            try
+            {
+                _indexedmzMLConnection = _indexedSerializer.Deserialize(stream) as Generated.indexedmzML;
+                _mzMLConnection = _indexedmzMLConnection.mzML;
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    _mzMLConnection = _mzMLSerializer.Deserialize(stream) as Generated.mzMLType;
+                }
+                catch (Exception)
+                {
+                    throw new InvalidDataException("Unable to parse " + FilePath + " as a mzML file!");
+                }
+            }
         }
 
         public static void Write(string filePath, Generated.indexedmzML _indexedmzMLConnection)
@@ -83,32 +100,6 @@ namespace IO.MzML
             TextWriter writer = new StreamWriter(filePath);
             _indexedSerializer.Serialize(writer, _indexedmzMLConnection);
             writer.Close();
-        }
-
-
-
-        public override void Open()
-        {
-            if (_mzMLConnection == null)
-            {
-                Stream stream = new FileStream(FilePath, FileMode.Open);
-                try
-                {
-                    _indexedmzMLConnection = _indexedSerializer.Deserialize(stream) as Generated.indexedmzML;
-                    _mzMLConnection = _indexedmzMLConnection.mzML;
-                }
-                catch (Exception)
-                {
-                    try
-                    {
-                        _mzMLConnection = _mzMLSerializer.Deserialize(stream) as Generated.mzMLType;
-                    }
-                    catch (Exception)
-                    {
-                        throw new InvalidDataException("Unable to parse " + FilePath + " as a mzML file!");
-                    }
-                }
-            }
         }
 
         public bool IsIndexedMzML

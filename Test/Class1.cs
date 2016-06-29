@@ -1,7 +1,6 @@
 ﻿using Chemistry;
 using IO.MzML;
 using MassSpectrometry;
-using mzIdentML;
 using NUnit.Framework;
 using Proteomics;
 using Spectra;
@@ -29,10 +28,6 @@ namespace Test
         public void LoadMzmlTest()
         {
             Mzml a = new Mzml(@"tiny.pwiz.1.1.mzML");
-            Assert.AreEqual(false, a.IsIndexedMzML);
-
-            a.Open();
-
             Assert.AreEqual(true, a.IsIndexedMzML);
 
             a.GetSpectrum(1);

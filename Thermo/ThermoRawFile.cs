@@ -71,18 +71,6 @@ namespace IO.Thermo
         public ThermoRawFile(string filePath)
             : base(filePath, true, MsDataFileType.ThermoRawFile)
         {
-        }
-
-        public static bool AlwaysGetUnlabeledData = false;
-
-        /// <summary>
-        /// Opens the connection to the underlying data
-        /// </summary>
-        public override void Open()
-        {
-            if (_rawConnection != null)
-                return;
-
             if (!File.Exists(FilePath) && !Directory.Exists(FilePath))
             {
                 throw new IOException(string.Format("The MS data file {0} does not currently exist", FilePath));
@@ -92,6 +80,8 @@ namespace IO.Thermo
             _rawConnection.Open(FilePath);
             _rawConnection.SetCurrentController(0, 1); // first 0 is for mass spectrometer
         }
+
+        public static bool AlwaysGetUnlabeledData = false;
 
         protected override int GetFirstSpectrumNumber()
         {
