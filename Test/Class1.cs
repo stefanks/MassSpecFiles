@@ -28,6 +28,7 @@ namespace Test
         public void LoadMzmlTest()
         {
             Mzml a = new Mzml(@"tiny.pwiz.1.1.mzML");
+            a.Open();
             Assert.AreEqual(true, a.IsIndexedMzML);
 
             a.GetSpectrum(1);

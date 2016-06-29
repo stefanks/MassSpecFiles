@@ -76,21 +76,27 @@ namespace IO.MzML
         public Mzml(string filePath)
             : base(filePath, true, MsDataFileType.Mzml)
         {
-            Stream stream = new FileStream(FilePath, FileMode.Open);
-            try
+        }
+        public override void Open()
+        {
+            if (_mzMLConnection == null)
             {
-                _indexedmzMLConnection = _indexedSerializer.Deserialize(stream) as Generated.indexedmzML;
-                _mzMLConnection = _indexedmzMLConnection.mzML;
-            }
-            catch (Exception)
-            {
+                Stream stream = new FileStream(FilePath, FileMode.Open);
                 try
                 {
-                    _mzMLConnection = _mzMLSerializer.Deserialize(stream) as Generated.mzMLType;
+                    _indexedmzMLConnection = _indexedSerializer.Deserialize(stream) as Generated.indexedmzML;
+                    _mzMLConnection = _indexedmzMLConnection.mzML;
                 }
                 catch (Exception)
                 {
-                    throw new InvalidDataException("Unable to parse " + FilePath + " as a mzML file!");
+                    try
+                    {
+                        _mzMLConnection = _mzMLSerializer.Deserialize(stream) as Generated.mzMLType;
+                    }
+                    catch (Exception)
+                    {
+                        throw new InvalidDataException("Unable to parse " + FilePath + " as an mzML file!");
+                    }
                 }
             }
         }

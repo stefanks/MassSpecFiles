@@ -3,6 +3,7 @@ using IO.Thermo;
 using NUnit.Framework;
 using Spectra;
 using System;
+using System.IO;
 
 namespace TestThermo
 {
@@ -20,6 +21,7 @@ namespace TestThermo
         public void LoadThermoTest()
         {
             ThermoRawFile a = new ThermoRawFile(@"Shew_246a_LCQa_15Oct04_Andro_0904-2_4-20.RAW");
+            a.Open();
             Assert.AreEqual(1, a.FirstSpectrumNumber);
             Assert.AreEqual(3316, a.LastSpectrumNumber);
             Assert.AreEqual(3316, a.LastSpectrumNumber);
@@ -39,7 +41,18 @@ namespace TestThermo
             Assert.AreEqual(1, spectrum.newSpectrumFilterByY(7.5e4).Count);
             Assert.AreEqual(2, spectrum.newSpectrumExtract(new DoubleRange(923, 928)).Count);
 
+
+            Assert.AreEqual("1.3", a.GetSofwareVersion());
+
             MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(a);
+        }
+
+
+        [Test]
+        public void ThermoLoadError()
+        {
+            ThermoRawFile a = new ThermoRawFile(@"aaa.RAW");
+            Assert.Throws<IOException>(() => { a.Open(); });
         }
     }
 }
