@@ -8,6 +8,7 @@ using Spectra;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace Test
@@ -73,7 +74,7 @@ namespace Test
             List<double> allIntensities = new List<double>();
             foreach (ChemicalFormulaFragment f in fragments)
             {
-                foreach (var p in createSpectrum(f.thisChemicalFormula, v1, v2, 2))
+                foreach (var p in createSpectrum(f.ThisChemicalFormula, v1, v2, 2))
                 {
                     allMasses.Add(p.MZ);
                     allIntensities.Add(p.Intensity);
@@ -88,16 +89,13 @@ namespace Test
 
         private DefaultMzSpectrum createSpectrum(ChemicalFormula f, double lowerBound, double upperBound, int minCharge)
         {
-            IsotopicDistribution isodist = new IsotopicDistribution(0.1);
 
-            double[] masses;
-            double[] intensities;
-            isodist.CalculateDistribuition(f, out masses, out intensities);
-            DefaultMzSpectrum massSpectrum1 = new DefaultMzSpectrum(masses, intensities, false);
+            IsotopicDistribution isodist = new IsotopicDistribution(f, 0.1);
+            DefaultMzSpectrum massSpectrum1 = new DefaultMzSpectrum(isodist.Masses.ToArray(), isodist.Intensities.ToArray(), false);
             massSpectrum1 = massSpectrum1.newSpectrumFilterByNumberOfMostIntense(5);
 
             var chargeToLookAt = minCharge;
-            var correctedSpectrum = massSpectrum1.newSpectrumApplyFunctionToX(s => (s + chargeToLookAt * Constants.Proton) / chargeToLookAt);
+            var correctedSpectrum = massSpectrum1.newSpectrumApplyFunctionToX(s => s.ToMassToChargeRatio(chargeToLookAt));
 
             List<double> allMasses = new List<double>();
             List<double> allIntensitiess = new List<double>();
@@ -113,7 +111,7 @@ namespace Test
                     }
                 }
                 chargeToLookAt += 1;
-                correctedSpectrum = massSpectrum1.newSpectrumApplyFunctionToX(s => (s + chargeToLookAt * Constants.Proton) / chargeToLookAt);
+                correctedSpectrum = massSpectrum1.newSpectrumApplyFunctionToX(s => s.ToMassToChargeRatio(chargeToLookAt));
             }
 
             var allMassesArray = allMasses.ToArray();

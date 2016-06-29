@@ -25,8 +25,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Chemistry, Version=1.0.101.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\Chemistry.1.0.101\lib\net451\Chemistry.dll</HintPath>
+    <Reference Include="Chemistry, Version=1.0.113.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\Chemistry.1.0.113\lib\net451\Chemistry.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="MassSpectrometry, Version=1.0.88.0, Culture=neutral, processorArchitecture=AMD64">
@@ -49,16 +49,16 @@
       <HintPath>..\packages\NUnit3TestAdapter.3.2.0\lib\nunit.engine.api.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.2.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.2.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.4.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.4.0\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NUnit3.TestAdapter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=4cb40d35494691ac, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit3TestAdapter.3.2.0\lib\NUnit3.TestAdapter.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Proteomics, Version=1.0.27.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\Proteomics.1.0.27\lib\net451\Proteomics.dll</HintPath>
+    <Reference Include="Proteomics, Version=1.0.33.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\Proteomics.1.0.33\lib\net451\Proteomics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Spectra, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
@@ -74,8 +74,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="UsefulProteomicsDatabases, Version=1.0.18.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\UsefulProteomicsDatabases.1.0.18\lib\net451\UsefulProteomicsDatabases.dll</HintPath>
+    <Reference Include="UsefulProteomicsDatabases, Version=1.0.19.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\UsefulProteomicsDatabases.1.0.19\lib\net451\UsefulProteomicsDatabases.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
