@@ -20,9 +20,6 @@ namespace TestThermo
         public void LoadThermoTest()
         {
             ThermoRawFile a = new ThermoRawFile(@"Shew_246a_LCQa_15Oct04_Andro_0904-2_4-20.RAW");
-            Assert.AreEqual(false, a.IsOpen);
-            a.Open();
-            Assert.AreEqual(true, a.IsOpen);
             Assert.AreEqual(1, a.FirstSpectrumNumber);
             Assert.AreEqual(3316, a.LastSpectrumNumber);
             Assert.AreEqual(3316, a.LastSpectrumNumber);
