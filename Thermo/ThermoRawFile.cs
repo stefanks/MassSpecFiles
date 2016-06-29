@@ -69,7 +69,7 @@ namespace IO.Thermo
         private IXRawfile5 _rawConnection;
 
         public ThermoRawFile(string filePath)
-            : base(filePath, MsDataFileType.ThermoRawFile)
+            : base(filePath, true, MsDataFileType.ThermoRawFile)
         {
         }
 
@@ -80,7 +80,7 @@ namespace IO.Thermo
         /// </summary>
         public override void Open()
         {
-            if (IsOpen && _rawConnection != null)
+            if (_rawConnection != null)
                 return;
 
             if (!File.Exists(FilePath) && !Directory.Exists(FilePath))
@@ -91,8 +91,6 @@ namespace IO.Thermo
             _rawConnection = (IXRawfile5)new MSFileReader_XRawfile();
             _rawConnection.Open(FilePath);
             _rawConnection.SetCurrentController(0, 1); // first 0 is for mass spectrometer
-
-            IsOpen = true;
         }
 
         protected override int GetFirstSpectrumNumber()

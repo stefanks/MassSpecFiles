@@ -74,7 +74,7 @@ namespace IO.MzML
         private mzMLType _mzMLConnection;
 
         public Mzml(string filePath)
-            : base(filePath, MsDataFileType.Mzml)
+            : base(filePath, true, MsDataFileType.Mzml)
         {
         }
 
@@ -89,7 +89,7 @@ namespace IO.MzML
 
         public override void Open()
         {
-            if (!IsOpen || _mzMLConnection == null)
+            if (_mzMLConnection == null)
             {
                 Stream stream = new FileStream(FilePath, FileMode.Open);
                 try
@@ -108,9 +108,6 @@ namespace IO.MzML
                         throw new InvalidDataException("Unable to parse " + FilePath + " as a mzML file!");
                     }
                 }
-
-
-                IsOpen = true;
             }
         }
 
@@ -137,7 +134,7 @@ namespace IO.MzML
                     case _PQD:
                         return DissociationType.PQD;
                     default:
-                        return DissociationType.UnKnown;
+                        return DissociationType.Unknown;
                 }
             }
             throw new ArgumentNullException("Could not find dissociation type for spectrum number " + spectrumNumber + 1);
@@ -573,7 +570,7 @@ namespace IO.MzML
     public static class MzmlMethods
     {
 
-        public static void CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(IMsDataFile<IMzSpectrum<MzPeak, MzRange>> myMsDataFile, List<IMzSpectrum<MzPeak, MzRange>> calibratedSpectra = null, List<double> calibratedPrecursorMZs = null, string outputFile = null)
+        public static void CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(IMsDataFile<IMzSpectrum<MzPeak>> myMsDataFile, List<IMzSpectrum<MzPeak>> calibratedSpectra = null, List<double> calibratedPrecursorMZs = null, string outputFile = null)
         {
 
             //Console.WriteLine("In CreateAndWriteMyIndexedMZmlwithCalibratedSpectra");

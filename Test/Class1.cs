@@ -30,12 +30,10 @@ namespace Test
         {
             Mzml a = new Mzml(@"tiny.pwiz.1.1.mzML");
             Assert.AreEqual(false, a.IsIndexedMzML);
-            Assert.AreEqual(false, a.IsOpen);
 
             a.Open();
 
             Assert.AreEqual(true, a.IsIndexedMzML);
-            Assert.AreEqual(true, a.IsOpen);
 
             a.GetSpectrum(1);
 
