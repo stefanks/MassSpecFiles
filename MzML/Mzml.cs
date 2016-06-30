@@ -733,9 +733,11 @@ namespace IO.MzML
                     {
                         case DissociationType.HCD:
                             _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].accession = "MS:1000422";
+                            _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].name = "beam-type collision-induced dissociation";
                             break;
                         case DissociationType.Unknown:
                             _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].accession = "MS:1000044";
+                            _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].name = "dissociation method";
                             break;
                     }
 
