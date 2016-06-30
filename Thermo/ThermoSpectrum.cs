@@ -33,7 +33,7 @@ namespace IO.Thermo
 
         public bool IsHighResolution { get { return _charges != null; } }
 
-        internal ThermoSpectrum(double[,] peakData, int count)
+        internal ThermoSpectrum(double[,] peakData)
             : base(peakData)
         {
             int arrayLength = peakData.GetLength(1);
@@ -60,15 +60,9 @@ namespace IO.Thermo
 
         }
 
-        internal ThermoSpectrum(double[,] peakData)
-            : this(peakData, peakData.GetLength(1))
-        {
-        }
-
         public ThermoSpectrum(double[] mz, double[] intensity, double[] noise, int[] charge, double[] resolutions, bool shouldCopy = true)
             : base(mz, intensity, shouldCopy)
         {
-            Console.WriteLine("In constructor!");
             if (!shouldCopy)
             {
                 _noises = noise;

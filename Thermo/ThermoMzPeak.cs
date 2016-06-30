@@ -50,12 +50,7 @@ namespace IO.Thermo
             Noise = noise;
             Resolution = resolution;
         }
-
-        public double GetSignalToNoise()
-        {
-            return SignalToNoise;
-        }
-
+        
         public double GetDenormalizedIntensity(double injectionTime)
         {
             return Intensity*injectionTime;
