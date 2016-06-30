@@ -72,8 +72,6 @@ namespace IO.Thermo
         {
         }
 
-        public static bool AlwaysGetUnlabeledData = false;
-
         public override void Open()
         {
             if (_rawConnection != null)
@@ -171,7 +169,7 @@ namespace IO.Thermo
             return PolarityRegex.IsMatch(filter) ? Polarity.Positive : Polarity.Negative;
         }
 
-        protected ThermoSpectrum GetSpectrumFromRawFile(int spectrumNumber, bool profileIfAvailable = false)
+        protected ThermoSpectrum GetSpectrumFromRawFile(int spectrumNumber)
         {
             try
             {
@@ -331,7 +329,7 @@ namespace IO.Thermo
             return new MzRange(lowMass, highMass);
         }
 
-        private int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
+        private int GetPrecusorCharge(int spectrumNumber)
         {
             short charge = Convert.ToInt16(GetExtraValue(spectrumNumber, "Charge State:"));
             return charge * (int)GetPolarity(spectrumNumber);
@@ -474,9 +472,9 @@ namespace IO.Thermo
             MzRange mzRange = new MzRange(lowMass, highMass);
 
             if (precursorID.Equals(GetSpectrumID(spectrumNumber)))
-                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), mzRange, GetScanFilter(spectrumNumber));
+                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), mzRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber));
             else
-                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), mzRange, GetScanFilter(spectrumNumber), precursorID, GetPrecursorMonoisotopicMz(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber), GetIsolationMZ(spectrumNumber), GetIsolationWidth(spectrumNumber), GetDissociationType(spectrumNumber), GetParentSpectrumNumber(spectrumNumber));
+                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), mzRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber), precursorID, GetPrecursorMonoisotopicMz(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber), GetIsolationMZ(spectrumNumber), GetIsolationWidth(spectrumNumber), GetDissociationType(spectrumNumber), GetParentSpectrumNumber(spectrumNumber));
         }
 
         private double GetIsolationMZ(int spectrumNumber)

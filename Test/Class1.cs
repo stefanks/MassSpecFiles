@@ -45,14 +45,19 @@ namespace Test
             DefaultMzSpectrum MS2 = createMS2spectrum(peptide.Fragment(FragmentTypes.b | FragmentTypes.y, true), 100, 1500);
 
             MsDataScan<DefaultMzSpectrum>[] Scans = new MsDataScan<DefaultMzSpectrum>[2];
-            Scans[0] = new MsDataScan<DefaultMzSpectrum>(1, MS1.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new MzRange(300, 2000), "first spectrum");
+            Scans[0] = new MsDataScan<DefaultMzSpectrum>(1, MS1.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new MzRange(300, 2000), "first spectrum", MZAnalyzerType.Unknown, 1);
 
-            Scans[1] = new MsDataScan<DefaultMzSpectrum>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00002), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "second spectrum", "spectrum 1", 693.9892, 3, .3872, 693.99, 1, DissociationType.Unknown, 1);
+            Scans[1] = new MsDataScan<DefaultMzSpectrum>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00002), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "second spectrum", MZAnalyzerType.Unknown, 1, "spectrum 1", 693.9892, 3, .3872, 693.99, 1, DissociationType.Unknown, 1);
 
-            var myMsDataFile = new FakeMsDataFile("myFakeFile", Scans);
+            var myMsDataFile = new FakeMsDataFile(@"myFakeFile.mzML", Scans);
 
 
             MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(myMsDataFile);
+
+
+            Mzml okay = new Mzml(@"myFakeFile.mzML");
+            okay.Open();
+            okay.GetScan(2);
         }
 
         private DefaultMzSpectrum createMS2spectrum(IEnumerable<Fragment> fragments, int v1, int v2)
