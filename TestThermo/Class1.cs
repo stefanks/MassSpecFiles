@@ -33,7 +33,7 @@ namespace TestThermo
             Assert.AreEqual("+ c ESI Full ms [400.00-2000.00]", scan.ScanFilter);
 
 
-            var spectrum = a.GetSpectrum(53);
+            var spectrum = a.GetScan(53).MassSpectrum;
 
             var peak = spectrum.GetPeakWithHighestY();
             Assert.AreEqual(75501, peak.Intensity);
@@ -42,7 +42,15 @@ namespace TestThermo
             Assert.AreEqual(2, spectrum.newSpectrumExtract(new DoubleRange(923, 928)).Count);
 
 
+
             Assert.AreEqual("1.3", a.GetSofwareVersion());
+            double ya;
+            a.GetScan(948).TryGetSelectedIonGuessIsolationIntensity(out ya);
+            Assert.AreEqual(4125760, ya);
+
+            Assert.AreEqual("LCQ", a.GetInstrumentName());
+            Assert.AreEqual("LCQ", a.GetInstrumentModel());
+
 
             MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(a);
         }

@@ -31,7 +31,7 @@ namespace Test
             a.Open();
             Assert.AreEqual(true, a.IsIndexedMzML);
 
-            a.GetSpectrum(1);
+            var ya = a.GetScan(1).MassSpectrum;
 
         }
 
@@ -44,15 +44,12 @@ namespace Test
             DefaultMzSpectrum MS1 = createSpectrum(peptide.GetChemicalFormula(), 300, 2000, 1);
             DefaultMzSpectrum MS2 = createMS2spectrum(peptide.Fragment(FragmentTypes.b | FragmentTypes.y, true), 100, 1500);
 
-
             MsDataScan<DefaultMzSpectrum>[] Scans = new MsDataScan<DefaultMzSpectrum>[2];
             Scans[0] = new MsDataScan<DefaultMzSpectrum>(1, MS1.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new MzRange(300, 2000), "first spectrum");
 
-            Scans[1] = new MsDataScan<DefaultMzSpectrum>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00002), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "second spectrum", "first spectrum", 800, 2, double.NaN);
+            Scans[1] = new MsDataScan<DefaultMzSpectrum>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00002), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "second spectrum", "spectrum 1", 693.9892, 3, .3872, 693.99, 1, DissociationType.Unknown, 1);
 
-            FakeMsDataFile myMsDataFile = new FakeMsDataFile("myFile.mzML");
-
-            myMsDataFile.Add(Scans);
+            var myMsDataFile = new FakeMsDataFile("myFakeFile", Scans);
 
 
             MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(myMsDataFile);

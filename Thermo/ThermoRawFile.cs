@@ -17,7 +17,6 @@
 // License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
 
 using MassSpectrometry;
-using MathNet.Numerics.Statistics;
 using MSFileReaderLib;
 using Spectra;
 using System;
@@ -104,14 +103,14 @@ namespace IO.Thermo
             return spectrumNumber;
         }
 
-        public override double GetRetentionTime(int spectrumNumber)
+        private double GetRetentionTime(int spectrumNumber)
         {
             double retentionTime = 0;
             _rawConnection.RTFromScanNum(spectrumNumber, ref retentionTime);
             return retentionTime;
         }
 
-        public override int GetMsnOrder(int spectrumNumber)
+        private int GetMsnOrder(int spectrumNumber)
         {
             int msnOrder = 0;
             _rawConnection.GetMSOrderForScanNum(spectrumNumber, ref msnOrder);
@@ -147,7 +146,7 @@ namespace IO.Thermo
             return value;
         }
 
-        public override string GetScanFilter(int spectrumNumber)
+        private string GetScanFilter(int spectrumNumber)
         {
             string filter = null;
             _rawConnection.GetFilterForScanNum(spectrumNumber, ref filter);
@@ -155,7 +154,7 @@ namespace IO.Thermo
         }
 
 
-        public override string GetSpectrumID(int spectrumNumber)
+        private string GetSpectrumID(int spectrumNumber)
         {
             int pnControllerType = 0;
             int pnControllerNumber = 0;
@@ -166,7 +165,7 @@ namespace IO.Thermo
 
         private static readonly Regex PolarityRegex = new Regex(@"\+ ", RegexOptions.Compiled);
 
-        public override Polarity GetPolarity(int spectrumNumber)
+        private Polarity GetPolarity(int spectrumNumber)
         {
             string filter = GetScanFilter(spectrumNumber);
             return PolarityRegex.IsMatch(filter) ? Polarity.Positive : Polarity.Negative;
@@ -211,7 +210,7 @@ namespace IO.Thermo
             return data;
         }
 
-        public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
+        private MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
             int mzanalyzer = 0;
             _rawConnection.GetMassAnalyzerTypeForScanNum(spectrumNumber, ref mzanalyzer);
@@ -231,7 +230,7 @@ namespace IO.Thermo
             }
         }
 
-        public override double GetPrecursorMonoisotopicMz(int spectrumNumber)
+        private double GetPrecursorMonoisotopicMz(int spectrumNumber)
         {
             return RefinePrecusorMz(spectrumNumber, GetMonoisotopicMZ(_rawConnection, spectrumNumber));
         }
@@ -266,14 +265,14 @@ namespace IO.Thermo
         private double RefinePrecusorMz(int spectrumNumber, double searchMZ)
         {
             int parentScanNumber = GetParentSpectrumNumber(spectrumNumber);
-            var ms1Scan = GetSpectrum(parentScanNumber);
+            var ms1Scan = GetScan(parentScanNumber).MassSpectrum;
             MzPeak peak = ms1Scan.GetClosestPeak(DoubleRange.FromDa(searchMZ, 50));
             if (peak != null)
                 return peak.MZ;
             return double.NaN;
         }
 
-        public override double GetIsolationWidth(int spectrumNumber)
+        private double GetIsolationWidth(int spectrumNumber)
         {
             object width = GetExtraValue(spectrumNumber, "MS2 Isolation Width:");
             return Convert.ToDouble(width);
@@ -305,14 +304,14 @@ namespace IO.Thermo
             return totalIonCurrent;
         }
 
-        public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
+        private DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
         {
             int type = 0;
             _rawConnection.GetActivationTypeForScanNum(spectrumNumber, msnOrder, ref type);
             return (DissociationType)type;
         }
 
-        public override MzRange GetMzRange(int spectrumNumber)
+        private MzRange GetMzRange(int spectrumNumber)
         {
             int numberOfPackets = -1;
             double startTime = double.NaN;
@@ -332,7 +331,7 @@ namespace IO.Thermo
             return new MzRange(lowMass, highMass);
         }
 
-        public override int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
+        private int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
         {
             short charge = Convert.ToInt16(GetExtraValue(spectrumNumber, "Charge State:"));
             return charge * (int)GetPolarity(spectrumNumber);
@@ -345,100 +344,10 @@ namespace IO.Thermo
             return spectrumNumber;
         }
 
-        public override double GetInjectionTime(int spectrumNumber)
+        private double GetInjectionTime(int spectrumNumber)
         {
             object time = GetExtraValue(spectrumNumber, "Ion Injection Time (ms):");
             return Convert.ToDouble(time);
-        }
-
-        public override double GetResolution(int spectrumNumber)
-        {
-            int arraySize = 0;
-            object keys = null;
-            object values = null;
-            _rawConnection.GetTrailerExtraForScanNum(spectrumNumber, ref keys, ref values, ref arraySize);
-
-            MZAnalyzerType analyzer = GetMzAnalyzer(spectrumNumber);
-            double resolution = 0;
-            switch (analyzer)
-            {
-                case MZAnalyzerType.FTICR:
-                case MZAnalyzerType.Orbitrap:
-                    string name = GetInstrumentName();
-                    if (name == "Orbitrap Fusion" || name == "Q Exactive")
-                    {
-                        object obj = GetExtraValue(spectrumNumber, "Orbitrap Resolution:");
-                        resolution = Convert.ToDouble(obj);
-                        if (resolution <= 0)
-                        {
-                            // Find first peak with S/N greater than 3 to use for resolution calculation
-                            double[,] data = GetLabeledData(spectrumNumber);
-                            int totalPeaks = data.GetLength(1);
-                            List<double> avgResolution = new List<double>();
-
-                            for (int i = 0; i < totalPeaks; i++)
-                            {
-                                double signalToNoise = data[1, i] / data[4, i];
-                                if (signalToNoise >= 5)
-                                {
-                                    double mz = data[0, i];
-                                    double peakRes = data[2, i];
-                                    double correctedResolution = peakRes * Math.Sqrt(mz / 200);
-                                    avgResolution.Add(correctedResolution);
-                                }
-                            }
-
-                            double meanResolution = avgResolution.Median();
-                            if (meanResolution <= 25000)
-                            {
-                                return 15000;
-                            }
-                            if (meanResolution <= 45000)
-                            {
-                                return 30000;
-                            }
-                            if (meanResolution <= 100000)
-                            {
-                                return 60000;
-                            }
-                            if (meanResolution <= 200000)
-                            {
-                                return 120000;
-                            }
-                            if (meanResolution <= 400000)
-                            {
-                                return 240000;
-                            }
-                            return 450000;
-                        }
-                        return resolution;
-                    }
-                    else
-                    {
-                        object obj = GetExtraValue(spectrumNumber, "FT Resolution:");
-                        resolution = Convert.ToDouble(obj);
-                        if (resolution > 300000) return 480000;
-                        return resolution;
-                    }
-            }
-            return resolution;
-        }
-
-        public double ResolutionDefinedAtMZ()
-        {
-            string name = GetInstrumentName();
-            switch (name)
-            {
-                case "Orbitrap Fusion":
-                case "Q Exactive":
-                    return 200;
-                case "LTQ Orbitrap XL":
-                case "LTQ Orbitrap Velos":
-                case "Orbitrap Elite":
-                    return 400;
-                default:
-                    return double.NaN;
-            }
         }
 
         public string GetInstrumentName()
@@ -511,24 +420,26 @@ namespace IO.Thermo
             return (from Match match in matches select double.Parse(match.Groups[1].Value)).ToList();
         }
 
-        public override bool GetIsCentroid(int spectrumNumber)
+        private bool GetIsCentroid(int spectrumNumber)
         {
             int isCentroid = -1;
             _rawConnection.IsCentroidScanForScanNum(spectrumNumber, ref isCentroid);
             return isCentroid > 0;
         }
 
-        public override string GetPrecursorID(int spectrumNumber)
+        private string GetPrecursorID(int spectrumNumber)
         {
             return GetSpectrumID(GetPrecursor(spectrumNumber));
         }
 
-        public override double GetPrecursorIsolationIntensity(int scanNumber)
+        private double GetPrecursorIsolationIntensity(int scanNumber)
         {
             double mz = -1;
             _rawConnection.GetPrecursorMassForScanNum(scanNumber, 2, ref mz);
-            return GetSpectrum(GetPrecursor(scanNumber)).GetClosestPeak(mz).Intensity;
+            return GetScan(GetPrecursor(scanNumber)).MassSpectrum.GetClosestPeak(mz).Intensity;
         }
+
+
 
         private int GetPrecursor(int spectrumNumber)
         {
@@ -541,16 +452,6 @@ namespace IO.Thermo
                 spectrumNumber--;
             }
             return spectrumNumber;
-        }
-
-        public override double GetPrecursorIsolationMz(int spectrumNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override MzRange GetIsolationRange(int spectrumNumber)
-        {
-            throw new NotImplementedException();
         }
 
         protected override MsDataScan<ThermoSpectrum> GetMsDataScanFromFile(int spectrumNumber)
@@ -575,7 +476,12 @@ namespace IO.Thermo
             if (precursorID.Equals(GetSpectrumID(spectrumNumber)))
                 return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), mzRange, GetScanFilter(spectrumNumber));
             else
-                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), mzRange, GetScanFilter(spectrumNumber), precursorID, GetPrecursorMonoisotopicMz(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber));
+                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), GetMsnOrder(spectrumNumber), GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), GetRetentionTime(spectrumNumber), mzRange, GetScanFilter(spectrumNumber), precursorID, GetPrecursorMonoisotopicMz(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber), GetIsolationMZ(spectrumNumber), GetIsolationWidth(spectrumNumber), GetDissociationType(spectrumNumber), GetParentSpectrumNumber(spectrumNumber));
+        }
+
+        private double GetIsolationMZ(int spectrumNumber)
+        {
+            return GetMonoisotopicMZ(_rawConnection, spectrumNumber);
         }
     }
 }

@@ -113,7 +113,7 @@ namespace IO.MzML
             get { return _indexedmzMLConnection != null; }
         }
 
-        public override DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
+        private DissociationType GetDissociationType(int spectrumNumber, int msnOrder = 2)
         {
             spectrumNumber--;
             foreach (Generated.CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].precursorList.precursor[0].activation.cvParam)
@@ -137,7 +137,7 @@ namespace IO.MzML
             throw new ArgumentNullException("Could not find dissociation type for spectrum number " + spectrumNumber + 1);
         }
 
-        public override int GetMsnOrder(int spectrumNumber)
+        private int GetMsnOrder(int spectrumNumber)
         {
             spectrumNumber--;
             foreach (Generated.CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].cvParam)
@@ -150,7 +150,7 @@ namespace IO.MzML
             throw new ArgumentNullException("Could not find MSn level for spectrum number " + spectrumNumber + 1);
         }
 
-        public override int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
+        private int GetPrecusorCharge(int spectrumNumber, int msnOrder = 2)
         {
             // PRECURSOR ARE ONLY IN MS2 SPECTRA!!!
             spectrumNumber--;
@@ -168,7 +168,7 @@ namespace IO.MzML
             throw new ArgumentNullException("Couldn't find precursor charge in spectrum number " + spectrumNumber + 1);
         }
 
-        public override MzRange GetMzRange(int spectrumNumber)
+        private MzRange GetMzRange(int spectrumNumber)
         {
             spectrumNumber--;
             double high = double.NaN;
@@ -193,7 +193,7 @@ namespace IO.MzML
         }
 
 
-        public override double GetIsolationWidth(int spectrumNumber)
+        private double GetIsolationWidth(int spectrumNumber)
         {
             spectrumNumber--;
             double low = double.NaN;
@@ -217,7 +217,7 @@ namespace IO.MzML
             return high - low;
         }
 
-        public override string GetScanFilter(int spectrumNumber)
+        private string GetScanFilter(int spectrumNumber)
         {
             spectrumNumber--;
 
@@ -234,7 +234,7 @@ namespace IO.MzML
 
         private static readonly Regex MZAnalyzerTypeRegex = new Regex(@"^[a-zA-Z]*", RegexOptions.Compiled);
 
-        public override MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
+        private MZAnalyzerType GetMzAnalyzer(int spectrumNumber)
         {
 
             string filter = GetScanFilter(spectrumNumber);
@@ -285,7 +285,7 @@ namespace IO.MzML
             }
         }
 
-        public override Polarity GetPolarity(int spectrumNumber)
+        private Polarity GetPolarity(int spectrumNumber)
         {
 
             spectrumNumber--;
@@ -304,7 +304,7 @@ namespace IO.MzML
             throw new ArgumentNullException("Could not find polarity for spectrum number " + spectrumNumber + 1);
         }
 
-        public override double GetRetentionTime(int spectrumNumber)
+        private double GetRetentionTime(int spectrumNumber)
         {
             spectrumNumber--;
             if (_mzMLConnection.run.spectrumList.spectrum[spectrumNumber].scanList.scan[0].cvParam == null)
@@ -329,7 +329,7 @@ namespace IO.MzML
             throw new ArgumentNullException("Could not determine retention time for " + spectrumNumber + 1);
         }
 
-        public override double GetInjectionTime(int spectrumNumber)
+        private double GetInjectionTime(int spectrumNumber)
         {
             spectrumNumber--;
             foreach (Generated.CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].scanList.scan[0].cvParam)
@@ -340,11 +340,6 @@ namespace IO.MzML
                 }
             }
             throw new ArgumentNullException("Could not determine injection time for " + spectrumNumber + 1);
-        }
-
-        public override double GetResolution(int spectrumNumber)
-        {
-            return 0.0;
         }
 
         protected override int GetFirstSpectrumNumber()
@@ -429,7 +424,7 @@ namespace IO.MzML
             return convertedArray;
         }
 
-        public override bool GetIsCentroid(int spectrumNumber)
+        private bool GetIsCentroid(int spectrumNumber)
         {
             spectrumNumber--;
             foreach (Generated.CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].cvParam)
@@ -446,19 +441,19 @@ namespace IO.MzML
             throw new ArgumentNullException("Could not determine if spectrum " + spectrumNumber + 1 + " is centroid or profile");
         }
 
-        public override string GetSpectrumID(int spectrumNumber)
+        private string GetSpectrumID(int spectrumNumber)
         {
             spectrumNumber--;
             return _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].id;
         }
 
-        public override string GetPrecursorID(int spectrumNumber)
+        private string GetPrecursorID(int spectrumNumber)
         {
             spectrumNumber--;
             return _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].precursorList.precursor[0].spectrumRef;
         }
 
-        public override double GetPrecursorIsolationIntensity(int spectrumNumber)
+        private double GetPrecursorIsolationIntensity(int spectrumNumber)
         {
             spectrumNumber--;
             foreach (Generated.CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam)
@@ -471,7 +466,7 @@ namespace IO.MzML
             throw new ArgumentNullException("Could not determine precursor intensity of spectrum " + spectrumNumber + 1);
         }
 
-        public override double GetPrecursorMonoisotopicMz(int spectrumNumber)
+        private double GetPrecursorMonoisotopicMz(int spectrumNumber)
         {
             spectrumNumber--;
             foreach (Generated.CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam)
@@ -484,12 +479,12 @@ namespace IO.MzML
             throw new ArgumentNullException("Could not determine precursor monoisotopic mass for " + spectrumNumber + 1);
         }
 
-        public override double GetPrecursorIsolationMz(int spectrumNumber)
+        private double GetPrecursorIsolationMz(int spectrumNumber)
         {
             throw new NotImplementedException();
         }
 
-        public override MzRange GetIsolationRange(int spectrumNumber)
+        private MzRange GetIsolationRange(int spectrumNumber)
         {
             throw new NotImplementedException();
         }
@@ -554,8 +549,13 @@ namespace IO.MzML
             if (GetMsnOrder(spectrumNumber + 1) == 1)
                 return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1));
             else
-                return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetPrecursorID(spectrumNumber + 1), GetPrecursorMonoisotopicMz(spectrumNumber + 1), GetPrecusorCharge(spectrumNumber + 1), GetPrecursorIsolationIntensity(spectrumNumber + 1));
+                return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetPrecursorID(spectrumNumber + 1), GetPrecursorMonoisotopicMz(spectrumNumber + 1), GetPrecusorCharge(spectrumNumber + 1), GetPrecursorIsolationIntensity(spectrumNumber + 1), GetPrecursorIsolationMz(spectrumNumber + 1), GetIsolationWidth(spectrumNumber + 1), GetDissociationType(spectrumNumber + 1), GetPrecursorScanNumber(spectrumNumber + 1));
 
+        }
+
+        private int GetPrecursorScanNumber(int v)
+        {
+            throw new NotImplementedException();
         }
 
         public override int GetParentSpectrumNumber(int spectrumNumber)
@@ -643,7 +643,7 @@ namespace IO.MzML
             {
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i] = new Generated.SpectrumType();
 
-                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].defaultArrayLength = calibratedSpectra == null ? myMsDataFile.GetSpectrum(i + myMsDataFile.FirstSpectrumNumber).Count : calibratedSpectra[i].Count;
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].defaultArrayLength = calibratedSpectra == null ? myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MassSpectrum.Count : calibratedSpectra[i].Count;
 
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].index = i.ToString();
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].id = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).id;
@@ -665,7 +665,9 @@ namespace IO.MzML
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.count = 1.ToString();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor = new Generated.PrecursorType[1];
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0] = new Generated.PrecursorType();
-                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].spectrumRef = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).PrecursorID;
+                    string precursorID;
+                    myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).TryGetPrecursorID(out precursorID);
+                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].spectrumRef = precursorID;
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList = new Generated.SelectedIonListType();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.count = 1.ToString();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon = new Generated.ParamGroupType[1];
@@ -674,17 +676,25 @@ namespace IO.MzML
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[0] = new Generated.CVParamType();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[0].name = "selected ion m/z";
                     if (calibratedPrecursorMZs == null)
-                        _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[0].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).SelectedIonMonoisotopicMZ.ToString();
+                    {
+                        double selectedIonGuessMZ;
+                        myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).TryGetSelectedIonGuessMZ(out selectedIonGuessMZ);
+                        _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[0].value = selectedIonGuessMZ.ToString();
+                    }
                     else
                         _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[0].value = calibratedPrecursorMZs[i].ToString();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[0].accession = "MS:1000744";
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[1] = new Generated.CVParamType();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[1].name = "charge state";
-                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[1].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).SelectedIonChargeState.ToString();
+                    int selectedIonGuessChargeStateGuess;
+                    myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).TryGetSelectedIonGuessChargeStateGuess(out selectedIonGuessChargeStateGuess);
+                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[1].value = selectedIonGuessChargeStateGuess.ToString();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[1].accession = "MS:1000041";
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[2] = new Generated.CVParamType();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[2].name = "peak intensity";
-                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[2].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).SelectedIonIsolationIntensity.ToString();
+                    double selectedIonGuessIsolationIntensity;
+                    myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).TryGetSelectedIonGuessIsolationIntensity(out selectedIonGuessIsolationIntensity);
+                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[2].value = selectedIonGuessIsolationIntensity.ToString();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].selectedIonList.selectedIon[0].cvParam[2].accession = "MS:1000042";
 
 
@@ -723,14 +733,14 @@ namespace IO.MzML
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[4].accession = "MS:1000796";
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[4].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).id;
 
-                if ((calibratedSpectra == null ? myMsDataFile.GetSpectrum(i + myMsDataFile.FirstSpectrumNumber).Count : calibratedSpectra[i].Count) > 0)
+                if ((calibratedSpectra == null ? myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MassSpectrum.Count : calibratedSpectra[i].Count) > 0)
                 {
                     // Lowest observed mz
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5] = new Generated.CVParamType();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5].name = "lowest observed m/z";
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5].accession = "MS:1000528";
                     if (calibratedSpectra == null)
-                        _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5].value = myMsDataFile.GetSpectrum(i + myMsDataFile.FirstSpectrumNumber).FirstX.ToString();
+                        _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MassSpectrum.FirstX.ToString();
                     else
                         _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5].value = calibratedSpectra[i].FirstX.ToString();
 
@@ -740,7 +750,7 @@ namespace IO.MzML
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[6].name = "highest observed m/z";
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[6].accession = "MS:1000527";
                     if (calibratedSpectra == null)
-                        _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[6].value = myMsDataFile.GetSpectrum(i + myMsDataFile.FirstSpectrumNumber).LastX.ToString();
+                        _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[6].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MassSpectrum.ToString();
                     else
                         _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[6].value = calibratedSpectra[i].LastX.ToString();
                 }
@@ -769,7 +779,7 @@ namespace IO.MzML
                 // M/Z Data
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[0] = new Generated.BinaryDataArrayType();
                 if (calibratedSpectra == null)
-                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[0].binary = Mzml.ConvertDoublestoBase64(myMsDataFile.GetSpectrum(i + myMsDataFile.FirstSpectrumNumber).xArray, false, false);
+                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[0].binary = Mzml.ConvertDoublestoBase64(myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MassSpectrum.xArray, false, false);
                 else
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[0].binary = Mzml.ConvertDoublestoBase64(calibratedSpectra[i].xArray, false, false);
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[0].encodedLength = (4 * Math.Ceiling(((double)_indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[0].binary.Length / 3))).ToString();
@@ -787,7 +797,7 @@ namespace IO.MzML
                 // Intensity Data
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[1] = new Generated.BinaryDataArrayType();
                 if (calibratedSpectra == null)
-                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[1].binary = Mzml.ConvertDoublestoBase64(myMsDataFile.GetSpectrum(i + myMsDataFile.FirstSpectrumNumber).yArray, false, false);
+                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[1].binary = Mzml.ConvertDoublestoBase64(myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MassSpectrum.yArray, false, false);
                 else
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[1].binary = Mzml.ConvertDoublestoBase64(calibratedSpectra[i].yArray, false, false);
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[1].encodedLength = (4 * Math.Ceiling(((double)_indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[1].binary.Length / 3))).ToString();
