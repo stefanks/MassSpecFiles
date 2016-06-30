@@ -569,11 +569,6 @@ namespace IO.MzML
         {
             return Convert.ToInt32(Regex.Match(GetPrecursorID(v), @"\d+$").Value);
         }
-
-        public override int GetParentSpectrumNumber(int spectrumNumber)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public static class MzmlMethods

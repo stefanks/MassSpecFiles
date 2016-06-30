@@ -114,8 +114,7 @@ namespace IO.Thermo
             _rawConnection.GetMSOrderForScanNum(spectrumNumber, ref msnOrder);
             return msnOrder;
         }
-
-        public override int GetParentSpectrumNumber(int spectrumNumber)
+        private int GetParentSpectrumNumber(int spectrumNumber)
         {
             return Convert.ToInt32(Regex.Match(GetPrecursorID(spectrumNumber), @"\d+$").Value);
         }
