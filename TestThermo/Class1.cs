@@ -62,5 +62,22 @@ namespace TestThermo
             ThermoRawFile a = new ThermoRawFile(@"aaa.RAW");
             Assert.Throws<IOException>(() => { a.Open(); });
         }
+        [Test]
+        public void LoadThermoTest2()
+        {
+            ThermoRawFile a = new ThermoRawFile(@"05-13-16_cali_MS_60K-res_MS.raw");
+            a.Open();
+            Assert.AreEqual(360, a.LastSpectrumNumber);
+            var ok = a.GetScan(1).MassSpectrum.GetNoises();
+            Assert.AreEqual(2401.57, ok[0], 0.01);
+        }
+        [Test]
+        public void LoadThermoTest3()
+        {
+            ThermoRawFile a = new ThermoRawFile(@"05-13-16_cali_MS-MS_524_7-5K-res.raw");
+            a.Open();
+            Assert.AreEqual(1289, a.LastSpectrumNumber);
+        }
+
     }
 }
