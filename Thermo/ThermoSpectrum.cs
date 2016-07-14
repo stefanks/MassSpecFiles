@@ -24,7 +24,7 @@ namespace IO.Thermo
     /// A high resolution spectra from a Thermo raw file
     /// </summary>
     [Serializable]
-    public sealed class ThermoSpectrum : MzSpectrum<ThermoMzPeak, ThermoSpectrum>
+    public sealed class ThermoSpectrum : MzSpectrum<ThermoMzPeak>
     {
 
         private readonly double[] _noises;
@@ -166,7 +166,7 @@ namespace IO.Thermo
             return data;
         }
 
-        public override ThermoSpectrum newSpectrumExtract(double minMZ, double maxMZ)
+        public new ThermoSpectrum newSpectrumExtract(double minMZ, double maxMZ)
         {
 
             int index = GetClosestPeakIndex(minMZ);
@@ -203,7 +203,7 @@ namespace IO.Thermo
         }
 
 
-        public override ThermoSpectrum newSpectrumFilterByY(double minIntensity = 0, double maxIntensity = double.MaxValue)
+        public new ThermoSpectrum newSpectrumFilterByY(double minIntensity = 0, double maxIntensity = double.MaxValue)
         {
 
             int count = Count;

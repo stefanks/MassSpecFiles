@@ -217,7 +217,7 @@ namespace IO.Thermo
         {
             int parentScanNumber = GetParentSpectrumNumber(spectrumNumber);
             var ms1Scan = GetScan(parentScanNumber).MassSpectrum;
-            MzPeak peak = ms1Scan.GetClosestPeak(DoubleRange.FromDa(GetPrecursorMonoisotopicMZfromTrailierExtra(_rawConnection, spectrumNumber), 50));
+            MzPeak peak = ms1Scan.GetClosestPeak(new DoubleRange(GetPrecursorMonoisotopicMZfromTrailierExtra(_rawConnection, spectrumNumber), new Tolerance(ToleranceUnit.Absolute, 50)));
             if (peak != null)
                 return peak.MZ;
             return double.NaN;

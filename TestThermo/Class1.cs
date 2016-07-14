@@ -35,7 +35,7 @@ namespace TestThermo
 
             var spectrum = a.GetScan(53).MassSpectrum;
 
-            var peak = spectrum.GetPeakWithHighestY();
+            var peak = spectrum.PeakWithHighestY;
             Assert.AreEqual(75501, peak.Intensity);
 
             Assert.AreEqual(1, spectrum.newSpectrumFilterByY(7.5e4).Count);
