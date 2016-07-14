@@ -154,15 +154,14 @@ namespace IO.Thermo
             int bytesToCopy = size * Count;
             Buffer.BlockCopy(xArray, 0, data, 0, bytesToCopy);
             Buffer.BlockCopy(yArray, 0, data, bytesToCopy, bytesToCopy);
-            Buffer.BlockCopy(_resolutions, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Resolution * bytesToCopy, bytesToCopy);
-            Buffer.BlockCopy(_noises, 0, data, (int)ThermoRawFile.RawLabelDataColumn.NoiseLevel * bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(_resolutions, 0, data, 2 * bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(_noises, 0, data, 3 * bytesToCopy, bytesToCopy);
 
             double[] charges = new double[Count];
             for (int i = 0; i < Count; i++)
-            {
                 charges[i] = _charges[i];
-            }
-            Buffer.BlockCopy(charges, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Charge * bytesToCopy, bytesToCopy);
+
+            Buffer.BlockCopy(charges, 0, data, 4 * bytesToCopy, bytesToCopy);
             return data;
         }
 
