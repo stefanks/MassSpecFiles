@@ -35,7 +35,7 @@ namespace TestThermo
 
             var spectrum = a.GetScan(53).MassSpectrum;
 
-            var peak = spectrum.GetPeakWithHighestY();
+            var peak = spectrum.PeakWithHighestY;
             Assert.AreEqual(75501, peak.Intensity);
 
             Assert.AreEqual(1, spectrum.newSpectrumFilterByY(7.5e4).Count);
@@ -70,6 +70,11 @@ namespace TestThermo
             Assert.AreEqual(360, a.LastSpectrumNumber);
             var ok = a.GetScan(1).MassSpectrum.GetNoises();
             Assert.AreEqual(2401.57, ok[0], 0.01);
+            ThermoSpectrum ok2 = a.GetScan(1).MassSpectrum.newSpectrumExtract(0, 500);
+            Assert.GreaterOrEqual(1000, a.GetScan(1).MassSpectrum.newSpectrumExtract(0, 500).LastX);
+            Assert.AreEqual(2, a.GetScan(1).MassSpectrum.newSpectrumFilterByY(5e6).Count);
+            var ye = a.GetScan(1).MassSpectrum.CopyTo2DArray();
+            Assert.AreEqual(1, ye[4, 1119]);
         }
         [Test]
         public void LoadThermoTest3()

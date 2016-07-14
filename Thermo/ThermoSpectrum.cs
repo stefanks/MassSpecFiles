@@ -24,7 +24,7 @@ namespace IO.Thermo
     /// A high resolution spectra from a Thermo raw file
     /// </summary>
     [Serializable]
-    public sealed class ThermoSpectrum : MzSpectrum<ThermoMzPeak, ThermoSpectrum>
+    public sealed class ThermoSpectrum : MzSpectrum<ThermoMzPeak>
     {
 
         private readonly double[] _noises;
@@ -154,19 +154,18 @@ namespace IO.Thermo
             int bytesToCopy = size * Count;
             Buffer.BlockCopy(xArray, 0, data, 0, bytesToCopy);
             Buffer.BlockCopy(yArray, 0, data, bytesToCopy, bytesToCopy);
-            Buffer.BlockCopy(_resolutions, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Resolution * bytesToCopy, bytesToCopy);
-            Buffer.BlockCopy(_noises, 0, data, (int)ThermoRawFile.RawLabelDataColumn.NoiseLevel * bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(_resolutions, 0, data, 2 * bytesToCopy, bytesToCopy);
+            Buffer.BlockCopy(_noises, 0, data, 3 * bytesToCopy, bytesToCopy);
 
             double[] charges = new double[Count];
             for (int i = 0; i < Count; i++)
-            {
                 charges[i] = _charges[i];
-            }
-            Buffer.BlockCopy(charges, 0, data, (int)ThermoRawFile.RawLabelDataColumn.Charge * bytesToCopy, bytesToCopy);
+
+            Buffer.BlockCopy(charges, 0, data, 4 * bytesToCopy, bytesToCopy);
             return data;
         }
 
-        public override ThermoSpectrum newSpectrumExtract(double minMZ, double maxMZ)
+        public new ThermoSpectrum newSpectrumExtract(double minMZ, double maxMZ)
         {
 
             int index = GetClosestPeakIndex(minMZ);
@@ -203,7 +202,7 @@ namespace IO.Thermo
         }
 
 
-        public override ThermoSpectrum newSpectrumFilterByY(double minIntensity = 0, double maxIntensity = double.MaxValue)
+        public new ThermoSpectrum newSpectrumFilterByY(double minIntensity = 0, double maxIntensity = double.MaxValue)
         {
 
             int count = Count;

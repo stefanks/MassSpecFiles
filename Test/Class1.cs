@@ -1,6 +1,7 @@
 ﻿using Chemistry;
 using IO.MzML;
 using MassSpectrometry;
+using MzIdentML;
 using NUnit.Framework;
 using Proteomics;
 using Spectra;
@@ -38,21 +39,23 @@ namespace Test
         [Test]
         public void WriteMzmlTest()
         {
-            var peptide = new Peptide("KQEEQMETEQQNKDEGK");
+            var peptide = new Peptide("GPEAPPPALPAGAPPPCTAVTSDHLNSLLGNILR");
+            ChemicalFormulaModification carbamidomethylationOfCMod = new ChemicalFormulaModification("H3C2NO", "carbamidomethylation of C", ModificationSites.C);
+
+
+            peptide.AddModification(carbamidomethylationOfCMod);
 
             DefaultMzSpectrum MS1 = createSpectrum(peptide.GetChemicalFormula(), 300, 2000, 1);
             DefaultMzSpectrum MS2 = createMS2spectrum(peptide.Fragment(FragmentTypes.b | FragmentTypes.y, true), 100, 1500);
 
-            MsDataScan<DefaultMzSpectrum>[] Scans = new MsDataScan<DefaultMzSpectrum>[2];
-            Scans[0] = new MsDataScan<DefaultMzSpectrum>(1, MS1.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new MzRange(300, 2000), "FTMS first spectrum", MZAnalyzerType.Unknown, 1);
+            MsDataScan<IMzSpectrum<MzPeak>>[] Scans = new MsDataScan<IMzSpectrum<MzPeak>>[2];
+            Scans[0] = new MsDataScan<IMzSpectrum<MzPeak>>(1, MS1.newSpectrumApplyFunctionToX(b => b + 0.000001 * b + 0.000001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new MzRange(300, 2000), "FTMS first spectrum", MZAnalyzerType.Unknown, 1);
 
-            Scans[1] = new MsDataScan<DefaultMzSpectrum>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00002), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "FTMS second spectrum", MZAnalyzerType.Unknown, 1, "spectrum 1", 693.9892, 3, .3872, 693.99, 1, DissociationType.Unknown, 1);
+            Scans[1] = new MsDataScan<IMzSpectrum<MzPeak>>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00001), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "FTMS second spectrum", MZAnalyzerType.Unknown, 1, "spectrum 1", 1134.26091302033, 3, 0.141146966879759, 1134.3, 1, DissociationType.Unknown, 1);
 
             var myMsDataFile = new FakeMsDataFile(@"myFakeFile.mzML", Scans);
 
-
             MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(myMsDataFile);
-
 
             Mzml okay = new Mzml(@"myFakeFile.mzML");
             okay.Open();
@@ -82,7 +85,7 @@ namespace Test
         {
 
             IsotopicDistribution isodist = new IsotopicDistribution(f, 0.1);
-            DefaultMzSpectrum massSpectrum1 = new DefaultMzSpectrum(isodist.Masses.ToArray(), isodist.Intensities.ToArray(), false);
+            IMzSpectrum<MzPeak> massSpectrum1 = new DefaultMzSpectrum(isodist.Masses.ToArray(), isodist.Intensities.ToArray(), false);
             massSpectrum1 = massSpectrum1.newSpectrumFilterByNumberOfMostIntense(5);
 
             var chargeToLookAt = minCharge;
@@ -117,7 +120,7 @@ namespace Test
 
 
         [Test]
-        public void WriteMzidTest()
+        public void mzidTest()
         {
             XmlSerializer _indexedSerializer = new XmlSerializer(typeof(mzIdentML.Generated.MzIdentMLType));
             var _mzid = new mzIdentML.Generated.MzIdentMLType();
@@ -130,10 +133,10 @@ namespace Test
             _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].spectrumID = "spectrum 2";
             _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem = new mzIdentML.Generated.SpectrumIdentificationItemType[1];
             _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0] = new mzIdentML.Generated.SpectrumIdentificationItemType();
-            _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].experimentalMassToCharge = 1039.97880968;
-            _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].calculatedMassToCharge = 1039.9684;
+            _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].experimentalMassToCharge = 1134.2609130203 + 0.000001 * 1134.2609130203 + 0.000001;
+            _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].calculatedMassToCharge = 1134.26091302033;
             _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].calculatedMassToChargeSpecified = true;
-            _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].chargeState = 2;
+            _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].chargeState = 3;
             _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].cvParam = new mzIdentML.Generated.CVParamType[1];
             _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].cvParam[0] = new mzIdentML.Generated.CVParamType();
             _mzid.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[0].SpectrumIdentificationItem[0].cvParam[0].value = 100.ToString();
@@ -144,11 +147,37 @@ namespace Test
             _mzid.SequenceCollection.PeptideEvidence[0].isDecoy = false;
             _mzid.SequenceCollection.Peptide = new mzIdentML.Generated.PeptideType[1];
             _mzid.SequenceCollection.Peptide[0] = new mzIdentML.Generated.PeptideType();
-            _mzid.SequenceCollection.Peptide[0].PeptideSequence = "KQEEQMETEQQNKDEGK";
-
+            _mzid.SequenceCollection.Peptide[0].PeptideSequence = "GPEAPPPALPAGAPPPCTAVTSDHLNSLLGNILR";
+            _mzid.SequenceCollection.Peptide[0].Modification = new mzIdentML.Generated.ModificationType[1];
+            _mzid.SequenceCollection.Peptide[0].Modification[0] = new mzIdentML.Generated.ModificationType();
+            _mzid.SequenceCollection.Peptide[0].Modification[0].locationSpecified = true;
+            _mzid.SequenceCollection.Peptide[0].Modification[0].location = 17;
+            _mzid.SequenceCollection.Peptide[0].Modification[0].monoisotopicMassDeltaSpecified = true;
+            _mzid.SequenceCollection.Peptide[0].Modification[0].monoisotopicMassDelta = 57.02146373;
+            _mzid.SequenceCollection.Peptide[0].Modification[0].cvParam = new mzIdentML.Generated.CVParamType[1];
+            _mzid.SequenceCollection.Peptide[0].Modification[0].cvParam[0] = new mzIdentML.Generated.CVParamType();
+            _mzid.SequenceCollection.Peptide[0].Modification[0].cvParam[0].accession = "UNIMOD:4";
+            _mzid.SequenceCollection.Peptide[0].Modification[0].cvParam[0].name = "Carbamidomethyl";
+            _mzid.SequenceCollection.Peptide[0].Modification[0].cvParam[0].cvRef = "UNIMOD";
             TextWriter writer = new StreamWriter("myIdentifications.mzid");
             _indexedSerializer.Serialize(writer, _mzid);
             writer.Close();
+
+            var identifications = new MzidIdentifications("myIdentifications.mzid");
+
+            Assert.AreEqual(1134.26091302033, identifications.calculatedMassToCharge(0));
+            Assert.AreEqual(3, identifications.chargeState(0));
+            Assert.AreEqual(1, identifications.Count());
+            Assert.AreEqual(1134.26091302033 + 0.000001 * 1134.2609130203 + 0.000001, identifications.experimentalMassToCharge(0), 1e-10);
+            Assert.IsFalse(identifications.isDecoy(0));
+            Assert.AreEqual("UNIMOD:4", identifications.modificationAcession(0, 0));
+            Assert.AreEqual("UNIMOD", identifications.modificationDictionary(0, 0));
+            Assert.AreEqual(17, identifications.modificationLocation(0, 0));
+            Assert.AreEqual(2, identifications.ms2spectrumIndex(0));
+            Assert.AreEqual(1, identifications.NumModifications(0));
+            Assert.AreEqual("GPEAPPPALPAGAPPPCTAVTSDHLNSLLGNILR", identifications.PeptideSequenceWithoutModifications(0));
+
+
         }
     }
 }
