@@ -100,7 +100,6 @@ namespace Test
                 {
                     if (thisPeak.MZ > lowerBound && thisPeak.MZ < upperBound)
                     {
-                        Console.WriteLine(thisPeak.MZ + "," + thisPeak.Intensity);
                         allMasses.Add(thisPeak.MZ);
                         allIntensitiess.Add(thisPeak.Intensity);
                     }
@@ -169,7 +168,7 @@ namespace Test
             Assert.AreEqual(1134.26091302033, identifications.calculatedMassToCharge(0));
             Assert.AreEqual(3, identifications.chargeState(0));
             Assert.AreEqual(1, identifications.Count());
-            Assert.AreEqual(1134.26091302033 + 0.000001 * 1134.2609130203 + 0.000001, identifications.experimentalMassToCharge(0),1e-10);
+            Assert.AreEqual(1134.26091302033 + 0.000001 * 1134.2609130203 + 0.000001, identifications.experimentalMassToCharge(0), 1e-10);
             Assert.IsFalse(identifications.isDecoy(0));
             Assert.AreEqual("UNIMOD:4", identifications.modificationAcession(0, 0));
             Assert.AreEqual("UNIMOD", identifications.modificationDictionary(0, 0));
