@@ -461,9 +461,9 @@ namespace IO.Thermo
 
 
             if (precursorID.Equals(GetSpectrumID(spectrumNumber)))
-                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), msnOrder, GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), retentionTime, mzRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber));
+                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), msnOrder, GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), retentionTime, mzRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber), totalIonCurrent);
             else
-                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), msnOrder, GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), retentionTime, mzRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber), precursorID, GetPrecursorMonoisotopicMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber), GetPrecursorMonoisotopicMZ(spectrumNumber), GetIsolationWidth(spectrumNumber), GetDissociationType(spectrumNumber), GetParentSpectrumNumber(spectrumNumber));
+                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), msnOrder, GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), retentionTime, mzRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber), totalIonCurrent, precursorID, GetPrecursorMonoisotopicMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber), GetPrecursorMonoisotopicMZ(spectrumNumber), GetIsolationWidth(spectrumNumber), GetDissociationType(spectrumNumber), GetParentSpectrumNumber(spectrumNumber));
         }
     }
 }

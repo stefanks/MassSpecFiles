@@ -20,7 +20,6 @@ using Ionic.Zlib;
 using MassSpectrometry;
 using Spectra;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
@@ -31,8 +30,6 @@ namespace IO.MzML
     {
         private static string _msnOrderAccession = "MS:1000511";
         private static string _precursorCharge = "MS:1000041";
-        private static string _lowestObservedMZ = "MS:1000528";
-        private static string _highestObservedMZ = "MS:1000527";
         private static string _precursorMass = "MS:1000744";
         private static string _isolationWindowTargetMZ = "MS:1000827";
         private static string _isolationWindowLowerOffset = "MS:1000828";
@@ -67,6 +64,9 @@ namespace IO.MzML
         private const string _centroidSpectrum = "MS:1000127";
         private const string _profileSpectrum = "MS:1000128";
         private const string _peakIntensity = "MS:1000042";
+        private const string _totalIonCurrent = "MS:1000285";
+        private const string _scanWindowLowerLimit = "MS:1000501";
+        private const string _scanWindowUpperLimit = "MS:1000500";
 
 
         private static XmlSerializer _indexedSerializer = new XmlSerializer(typeof(Generated.indexedmzML));
@@ -170,26 +170,26 @@ namespace IO.MzML
             throw new ArgumentNullException("Couldn't find precursor charge in spectrum number " + spectrumNumber + 1);
         }
 
-        private MzRange GetMzRange(int spectrumNumber)
+        private MzRange GetScanWindowMzRange(int spectrumNumber)
         {
             spectrumNumber--;
             double high = double.NaN;
             double low = double.NaN;
 
-            foreach (Generated.CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].cvParam)
+            foreach (Generated.CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].scanList.scan[0].scanWindowList.scanWindow[0].cvParam)
             {
-                if (cv.accession.Equals(_lowestObservedMZ))
+                if (cv.accession.Equals(_scanWindowLowerLimit))
                 {
                     low = double.Parse(cv.value);
                 }
-                if (cv.accession.Equals(_highestObservedMZ))
+                if (cv.accession.Equals(_scanWindowUpperLimit))
                 {
                     high = double.Parse(cv.value);
                 }
             }
             if (double.IsNaN(low) || double.IsNaN(high))
             {
-                throw new ArgumentNullException("Could not find MZ range for " + spectrumNumber + 1);
+                throw new ArgumentNullException("Could not find scan window MZ range for " + spectrumNumber + 1);
             }
             return new MzRange(low, high);
         }
@@ -559,9 +559,23 @@ namespace IO.MzML
             var ok = new DefaultMzSpectrum(masses, intensities, false);
 
             if (GetMsnOrder(spectrumNumber + 1) == 1)
-                return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetMzAnalyzer(spectrumNumber + 1), GetInjectionTime(spectrumNumber + 1));
+                return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetScanWindowMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetMzAnalyzer(spectrumNumber + 1), GetInjectionTime(spectrumNumber + 1), GetTotalIonCurrent(spectrumNumber + 1));
             else
-                return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetMzAnalyzer(spectrumNumber + 1), GetInjectionTime(spectrumNumber + 1), GetPrecursorID(spectrumNumber + 1), GetPrecursorMonoisotopicMz(spectrumNumber + 1), GetPrecusorCharge(spectrumNumber + 1), GetPrecursorIsolationIntensity(spectrumNumber + 1), GetIsolationMz(spectrumNumber + 1), GetIsolationWidth(spectrumNumber + 1), GetDissociationType(spectrumNumber + 1), GetPrecursorScanNumber(spectrumNumber + 1));
+                return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetScanWindowMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetMzAnalyzer(spectrumNumber + 1), GetInjectionTime(spectrumNumber + 1), GetTotalIonCurrent(spectrumNumber + 1), GetPrecursorID(spectrumNumber + 1), GetPrecursorMonoisotopicMz(spectrumNumber + 1), GetPrecusorCharge(spectrumNumber + 1), GetPrecursorIsolationIntensity(spectrumNumber + 1), GetIsolationMz(spectrumNumber + 1), GetIsolationWidth(spectrumNumber + 1), GetDissociationType(spectrumNumber + 1), GetPrecursorScanNumber(spectrumNumber + 1));
+
+        }
+
+        private double GetTotalIonCurrent(int spectrumNumber)
+        {
+            spectrumNumber--;
+            foreach (Generated.CVParamType cv in _mzMLConnection.run.spectrumList.spectrum[spectrumNumber].cvParam)
+            {
+                if (cv.accession.Equals(_totalIonCurrent))
+                {
+                    return double.Parse(cv.value);
+                }
+            }
+            throw new ArgumentNullException("Could not determine total ion current " + spectrumNumber + 1);
 
         }
 
@@ -655,7 +669,7 @@ namespace IO.MzML
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].index = i.ToString();
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].id = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).id;
 
-                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam = new Generated.CVParamType[7];
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam = new Generated.CVParamType[8];
 
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[0] = new Generated.CVParamType();
 
@@ -780,16 +794,21 @@ namespace IO.MzML
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5] = new Generated.CVParamType();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5].name = "lowest observed m/z";
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5].accession = "MS:1000528";
-
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[5].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MassSpectrum.FirstX.ToString();
 
                     // Highest observed mz
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[6] = new Generated.CVParamType();
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[6].name = "highest observed m/z";
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[6].accession = "MS:1000527";
-
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[6].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).MassSpectrum.LastX.ToString();
                 }
+
+
+                // Total ion current
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[7] = new Generated.CVParamType();
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[7].name = "total ion current";
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[7].accession = "MS:1000285";
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[7].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).TotalIonCurrent.ToString();
 
                 // Retention time
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList = new Generated.ScanListType();
@@ -808,6 +827,21 @@ namespace IO.MzML
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].cvParam[1].name = "filter string";
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].cvParam[1].accession = "MS:1000512";
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].cvParam[1].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).ScanFilter;
+
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList = new Generated.ScanWindowListType();
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.count = 1;
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow = new Generated.ParamGroupType[1];
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0] = new Generated.ParamGroupType();
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0].cvParam = new Generated.CVParamType[2];
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0].cvParam[0] = new Generated.CVParamType();
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0].cvParam[0].name = "scan window lower limit";
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0].cvParam[0].accession = "MS:1000501";
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0].cvParam[0].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).ScanWindowRange.Minimum.ToString();
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0].cvParam[1] = new Generated.CVParamType();
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0].cvParam[1].name = "scan window upper limit";
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0].cvParam[1].accession = "MS:1000500";
+                _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].scanList.scan[0].scanWindowList.scanWindow[0].cvParam[1].value = myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).ScanWindowRange.Maximum.ToString();
+
 
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList = new Generated.BinaryDataArrayListType();
 
