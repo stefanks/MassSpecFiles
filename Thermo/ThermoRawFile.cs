@@ -202,12 +202,6 @@ namespace IO.Thermo
             {
                 case ThermoMzAnalyzer.FTMS:
                     return MZAnalyzerType.Orbitrap;
-                case ThermoMzAnalyzer.ITMS:
-                    return MZAnalyzerType.IonTrap2D;
-                case ThermoMzAnalyzer.Sector:
-                    return MZAnalyzerType.Sector;
-                case ThermoMzAnalyzer.TOFMS:
-                    return MZAnalyzerType.TOF;
                 default:
                     return MZAnalyzerType.Unknown;
             }
@@ -286,26 +280,6 @@ namespace IO.Thermo
             int type = 0;
             _rawConnection.GetActivationTypeForScanNum(spectrumNumber, msnOrder, ref type);
             return (DissociationType)type;
-        }
-
-        private MzRange GetMzRange(int spectrumNumber)
-        {
-            int numberOfPackets = -1;
-            double startTime = double.NaN;
-            double lowMass = double.NaN;
-            double highMass = double.NaN;
-            double totalIonCurrent = double.NaN;
-            double basePeakMass = double.NaN;
-            double basePeakIntensity = double.NaN;
-            int numberOfChannels = -1;
-            int uniformTime = -1;
-            double frequency = double.NaN;
-            _rawConnection.GetScanHeaderInfoForScanNum(spectrumNumber, ref numberOfPackets, ref startTime, ref lowMass,
-                ref highMass,
-                ref totalIonCurrent, ref basePeakMass, ref basePeakIntensity,
-                ref numberOfChannels, ref uniformTime, ref frequency);
-
-            return new MzRange(lowMass, highMass);
         }
 
         private int GetPrecusorCharge(int spectrumNumber)
@@ -450,7 +424,7 @@ namespace IO.Thermo
                 ref numberOfChannels, ref uniformTime, ref frequency);
 
 
-            MzRange mzRange = new MzRange(lowMass, highMass);
+            MzRange ScanWindowRange = new MzRange(lowMass, highMass);
 
 
 
@@ -461,9 +435,9 @@ namespace IO.Thermo
 
 
             if (precursorID.Equals(GetSpectrumID(spectrumNumber)))
-                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), msnOrder, GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), retentionTime, mzRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber), totalIonCurrent);
+                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), msnOrder, GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), retentionTime, ScanWindowRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber), totalIonCurrent);
             else
-                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), msnOrder, GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), retentionTime, mzRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber), totalIonCurrent, precursorID, GetPrecursorMonoisotopicMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber), GetPrecursorMonoisotopicMZ(spectrumNumber), GetIsolationWidth(spectrumNumber), GetDissociationType(spectrumNumber), GetParentSpectrumNumber(spectrumNumber));
+                return new MsDataScan<ThermoSpectrum>(spectrumNumber, GetSpectrumFromRawFile(spectrumNumber), GetSpectrumID(spectrumNumber), msnOrder, GetIsCentroid(spectrumNumber), GetPolarity(spectrumNumber), retentionTime, ScanWindowRange, GetScanFilter(spectrumNumber), GetMzAnalyzer(spectrumNumber), GetInjectionTime(spectrumNumber), totalIonCurrent, precursorID, GetPrecursorMonoisotopicMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetPrecursorIsolationIntensity(spectrumNumber), GetPrecursorMonoisotopicMZ(spectrumNumber), GetIsolationWidth(spectrumNumber), GetDissociationType(spectrumNumber), GetParentSpectrumNumber(spectrumNumber));
         }
     }
 }
