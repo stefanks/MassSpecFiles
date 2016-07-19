@@ -49,9 +49,9 @@ namespace Test
             DefaultMzSpectrum MS2 = createMS2spectrum(peptide.Fragment(FragmentTypes.b | FragmentTypes.y, true), 100, 1500);
 
             MsDataScan<IMzSpectrum<MzPeak>>[] Scans = new MsDataScan<IMzSpectrum<MzPeak>>[2];
-            Scans[0] = new MsDataScan<IMzSpectrum<MzPeak>>(1, MS1.newSpectrumApplyFunctionToX(b => b + 0.000001 * b + 0.000001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new MzRange(300, 2000), "FTMS first spectrum", MZAnalyzerType.Unknown, 1);
+            Scans[0] = new MsDataScan<IMzSpectrum<MzPeak>>(1, MS1.newSpectrumApplyFunctionToX(b => b + 0.000001 * b + 0.000001), "spectrum 1", 1, false, Polarity.Positive, 1.0, new MzRange(300, 2000), "FTMS first spectrum", MZAnalyzerType.Unknown, 1, MS1.SumOfAllY);
 
-            Scans[1] = new MsDataScan<IMzSpectrum<MzPeak>>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00001), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "FTMS second spectrum", MZAnalyzerType.Unknown, 1, "spectrum 1", 1134.26091302033, 3, 0.141146966879759, 1134.3, 1, DissociationType.Unknown, 1);
+            Scans[1] = new MsDataScan<IMzSpectrum<MzPeak>>(2, MS2.newSpectrumApplyFunctionToX(b => b + 0.00001 * b + 0.00001), "spectrum 2", 2, false, Polarity.Positive, 2.0, new MzRange(100, 1500), "FTMS second spectrum", MZAnalyzerType.Unknown, 1, MS2.SumOfAllY, "spectrum 1", 1134.26091302033, 3, 0.141146966879759, 1134.3, 1, DissociationType.Unknown, 1);
 
             var myMsDataFile = new FakeMsDataFile(@"myFakeFile.mzML", Scans);
 
