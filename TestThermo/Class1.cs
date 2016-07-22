@@ -76,14 +76,9 @@ namespace TestThermo
             Assert.AreEqual(2, a.GetScan(1).MassSpectrum.newSpectrumFilterByY(5e6).Count);
             var ye = a.GetScan(1).MassSpectrum.CopyTo2DArray();
             Assert.AreEqual(1, ye[4, 1119]);
+            Assert.AreEqual("(195.0874,1.0214E+07) z = +1 SN = 4170.38", a.GetScan(1).MassSpectrum.PeakWithHighestY.ToString());
+            Assert.AreEqual(77561752, a.GetTIC(1));
+            Assert.AreEqual(144, a.GetSpectrumNumber(2));
         }
-        [Test]
-        public void LoadThermoTest3()
-        {
-            ThermoRawFile a = new ThermoRawFile(@"05-13-16_cali_MS-MS_524_7-5K-res.raw");
-            a.Open();
-            Assert.AreEqual(1289, a.LastSpectrumNumber);
-        }
-
     }
 }
