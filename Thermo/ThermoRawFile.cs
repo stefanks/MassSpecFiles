@@ -166,12 +166,6 @@ namespace IO.Thermo
             }
         }
 
-        public ThermoSpectrum GetLabeledSpectrum(int spectrumNumber)
-        {
-            var labelData = GetLabeledData(spectrumNumber);
-            return new ThermoSpectrum(labelData);
-        }
-
         private double[,] GetUnlabeledData(int spectrumNumber, bool useCentroid)
         {
             object massList = null;
@@ -313,22 +307,6 @@ namespace IO.Thermo
             string model = null;
             _rawConnection.GetInstModel(ref model);
             return model;
-        }
-
-        private static Regex _etdReactTimeRegex = new Regex(@"@etd(\d+).(\d+)(\d+)", RegexOptions.Compiled);
-
-        public double GetETDReactionTime(int spectrumNumber)
-        {
-            string scanheader = GetScanFilter(spectrumNumber);
-            Match m = _etdReactTimeRegex.Match(scanheader);
-            if (m.Success)
-            {
-                string etdTime = m.ToString();
-                string Time = etdTime.Remove(0, 4);
-                double reactTime = double.Parse(Time);
-                return reactTime;
-            }
-            return double.NaN;
         }
 
         public Chromatogram GetTICChroma()
