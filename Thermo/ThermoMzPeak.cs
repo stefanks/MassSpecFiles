@@ -1,19 +1,20 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// Modified work Copyright 2016 Stefan Solntsev
 // 
-// This file (ThermoLabeledPeak.cs) is part of CSMSL.
+// This file (ThermoMzPeak.cs) is part of MassSpecFiles.
 // 
-// CSMSL is free software: you can redistribute it and/or modify it
+// MassSpecFiles is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// MassSpecFiles is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public
-// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+// License along with MassSpecFiles. If not, see <http://www.gnu.org/licenses/>.
 
 using Spectra;
 
@@ -32,28 +33,22 @@ namespace IO.Thermo
             get
             {
                 if (Noise.Equals(0)) return float.NaN;
-                return Intensity/Noise;
+                return Intensity / Noise;
             }
         }
 
-        public bool IsHighResolution { get { return Resolution > 0;} }
 
         public override string ToString()
         {
             return string.Format("{0} z = {1:+#;-#;?} SN = {2:F2}", base.ToString(), Charge, SignalToNoise);
         }
-        
+
         public ThermoMzPeak(double mz, double intensity, int charge = 0, double noise = 0.0, double resolution = 0.0)
             : base(mz, intensity)
         {
             Charge = charge;
             Noise = noise;
             Resolution = resolution;
-        }
-        
-        public double GetDenormalizedIntensity(double injectionTime)
-        {
-            return Intensity*injectionTime;
         }
     }
 }

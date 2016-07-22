@@ -1,19 +1,20 @@
 ﻿// Copyright 2012, 2013, 2014 Derek J. Bailey
+// Modified work Copyright 2016 Stefan Solntsev
 // 
-// This file (ThermoSpectrum.cs) is part of CSMSL.
+// This file (ThermoSpectrum.cs) is part of MassSpecFiles.
 // 
-// CSMSL is free software: you can redistribute it and/or modify it
+// MassSpecFiles is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as published
 // by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 // 
-// CSMSL is distributed in the hope that it will be useful, but WITHOUT
+// MassSpecFiles is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 // FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
 // License for more details.
 // 
 // You should have received a copy of the GNU Lesser General Public
-// License along with CSMSL. If not, see <http://www.gnu.org/licenses/>.
+// License along with MassSpecFiles. If not, see <http://www.gnu.org/licenses/>.
 
 using Spectra;
 using System;
@@ -30,8 +31,6 @@ namespace IO.Thermo
         private readonly double[] _noises;
         private readonly double[] _resolutions;
         private readonly int[] _charges;
-
-        public bool IsHighResolution { get { return _charges != null; } }
 
         internal ThermoSpectrum(double[,] peakData)
             : base(peakData)
@@ -97,12 +96,12 @@ namespace IO.Thermo
 
         public double GetNoise(int index)
         {
-            return IsHighResolution ? _noises[index] : 0;
+            return _noises == null ? 0 : _noises[index];
         }
 
         public double GetSignalToNoise(int index)
         {
-            if (!IsHighResolution)
+            if (_noises == null)
                 return 0;
             double noise = _noises[index];
             if (Math.Abs(noise) < 1e-25)
@@ -112,12 +111,12 @@ namespace IO.Thermo
 
         public int GetCharge(int index)
         {
-            return IsHighResolution ? _charges[index] : 0;
+            return _charges == null ? 0 : _charges[index];
         }
 
         public double GetResolution(int index)
         {
-            return IsHighResolution ? _resolutions[index] : 0;
+            return _resolutions == null ? 0 : _resolutions[index];
         }
 
         public double[] GetNoises()
@@ -140,9 +139,9 @@ namespace IO.Thermo
             get
             {
                 if (peakList[index] == null)
-                    peakList[index] = IsHighResolution ?
-                        new ThermoMzPeak(xArray[index], yArray[index], _charges[index], _noises[index], _resolutions[index]) :
-                        new ThermoMzPeak(xArray[index], yArray[index]);
+                    peakList[index] = _charges == null ?
+                        new ThermoMzPeak(xArray[index], yArray[index]) :
+                new ThermoMzPeak(xArray[index], yArray[index], _charges[index], _noises[index], _resolutions[index]);
                 return peakList[index];
             }
         }
