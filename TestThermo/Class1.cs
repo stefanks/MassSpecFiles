@@ -79,6 +79,17 @@ namespace TestThermo
             Assert.AreEqual("(195.0874,1.0214E+07) z = +1 SN = 4170.38", a.GetScan(1).MassSpectrum.PeakWithHighestY.ToString());
             Assert.AreEqual(77561752, a.GetTIC(1));
             Assert.AreEqual(144, a.GetSpectrumNumber(2));
+
+
+
+            Assert.AreEqual(0.98, a.GetElapsedScanTime(100), 0.01);
+
+            var cromatogram = a.GetTICChroma();
+
+            Assert.AreEqual(360, cromatogram.Count);
+            Assert.AreEqual(0.01, cromatogram.FirstTime, 0.002);
+            Assert.AreEqual(2.788433333, cromatogram.PeakWithHighestY.Time, 0.0001);
+            Assert.AreEqual(2.788433333, cromatogram.GetApex(0, 5).Time, 0.0001);
         }
     }
 }
