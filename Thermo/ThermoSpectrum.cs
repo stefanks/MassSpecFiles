@@ -54,11 +54,6 @@ namespace IO.Thermo
             }
         }
 
-        public ThermoSpectrum(double[] mz, double[] intensity, bool ok) : base(mz, intensity, ok)
-        {
-
-        }
-
         public ThermoSpectrum(double[] mz, double[] intensity, double[] noise, int[] charge, double[] resolutions, bool shouldCopy = true)
             : base(mz, intensity, shouldCopy)
         {
@@ -102,10 +97,8 @@ namespace IO.Thermo
         public double GetSignalToNoise(int index)
         {
             if (_noises == null)
-                return 0;
+                return double.NaN;
             double noise = _noises[index];
-            if (Math.Abs(noise) < 1e-25)
-                return 0;
             return xArray[index] / noise;
         }
 
