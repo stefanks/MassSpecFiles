@@ -43,6 +43,7 @@ namespace TestThermo
             Assert.AreEqual(2, spectrum.newSpectrumExtract(new DoubleRange(923, 928)).Count);
 
 
+            Assert.AreEqual(double.NaN, spectrum.GetSignalToNoise(1));
 
             Assert.AreEqual("1.3", a.GetSofwareVersion());
             double ya;
@@ -90,6 +91,10 @@ namespace TestThermo
             Assert.AreEqual(0.01, cromatogram.FirstTime, 0.002);
             Assert.AreEqual(2.788433333, cromatogram.PeakWithHighestY.Time, 0.0001);
             Assert.AreEqual(2.788433333, cromatogram.GetApex(0, 5).Time, 0.0001);
+
+            var newSpectrum = new ThermoSpectrum(a.GetScan(51).MassSpectrum);
+            Assert.AreEqual(152.69 / 5574.8, newSpectrum.GetSignalToNoise(1), 0.01);
+
         }
     }
 }
