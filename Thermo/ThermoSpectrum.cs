@@ -99,8 +99,6 @@ namespace IO.Thermo
             if (_noises == null)
                 return double.NaN;
             double noise = _noises[index];
-            if (Math.Abs(noise) < 1e-25)
-                return double.NaN;
             return xArray[index] / noise;
         }
 
