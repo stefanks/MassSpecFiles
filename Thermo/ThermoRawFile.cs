@@ -112,16 +112,6 @@ namespace IO.Thermo
             return softwareVersion;
         }
 
-        public double[,] GetChro(string scanFilter, MzRange range, double startTime, double endTime, Smoothing smoothing = Smoothing.None, int smoothingPoints = 3)
-        {
-            object chro = null;
-            object flags = null;
-            int size = 0;
-            string mzrange = range.Minimum.ToString("F4") + "-" + range.Maximum.ToString("F4");
-            _rawConnection.GetChroData(0, 0, 0, scanFilter, mzrange, string.Empty, 0.0, startTime, endTime, (int)smoothing, smoothingPoints, ref chro, ref flags, ref size);
-            return (double[,])chro;
-        }
-
         private object GetExtraValue(int spectrumNumber, string filter)
         {
             object value = null;
