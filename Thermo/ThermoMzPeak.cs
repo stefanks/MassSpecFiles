@@ -32,7 +32,6 @@ namespace IO.Thermo
         {
             get
             {
-                if (Noise.Equals(0)) return float.NaN;
                 return Intensity / Noise;
             }
         }
