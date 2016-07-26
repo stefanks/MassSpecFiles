@@ -89,11 +89,6 @@ namespace IO.Thermo
 
         }
 
-        public double GetNoise(int index)
-        {
-            return _noises == null ? 0 : _noises[index];
-        }
-
         public double GetSignalToNoise(int index)
         {
             if (_noises == null)
