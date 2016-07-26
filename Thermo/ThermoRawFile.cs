@@ -200,7 +200,7 @@ namespace IO.Thermo
 
             if (tryy == -1)
             {
-                tryy = AttemptToFindMonoisotopicMZ(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetSelectedIonIntensity(spectrumNumber));
+                tryy = AttemptToFindMonoisotopicMZ(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber));
             }
 
             peak = ms1Spectrum.GetClosestPeak(tryy);
@@ -208,22 +208,27 @@ namespace IO.Thermo
             return peak.MZ;
         }
 
-        private double AttemptToFindMonoisotopicMZ(ThermoSpectrum ms1Spectrum, double isolationMZ, int charge, double isolationIntensity)
+        public double AttemptToFindMonoisotopicMZ(ThermoSpectrum ms1Spectrum, double isolationMZ, int charge)
         {
             double checkPeak = isolationMZ;
-            double goodPeak = isolationMZ;
+            MzPeak goodPeak = ms1Spectrum.GetClosestPeak(isolationMZ);
+            double checkIntensity = goodPeak.Intensity;
             while (true)
             {
                 checkPeak = checkPeak - 1.0 / charge;
+                var peak = ms1Spectrum.GetClosestPeak(checkPeak);
+                var a = Math.Abs(peak.MZ - checkPeak);
+                var b = peak.Intensity;
                 // HACK
-                var a = Math.Abs(ms1Spectrum.GetClosestPeak(checkPeak).MZ - checkPeak);
-                var b = ms1Spectrum.GetClosestPeak(checkPeak).Intensity;
-                if (a < 0.01 && isolationIntensity / 1000 < b)
-                    goodPeak = checkPeak;
+                if (a < 0.01 && b >= checkIntensity / 2)
+                {
+                    goodPeak = peak;
+                    checkIntensity = b;
+                }
                 else
                     break;
             }
-            return goodPeak;
+            return goodPeak.MZ;
         }
 
         private static double GetPrecursorMonoisotopicMZfromTrailierExtra(IXRawfile2 raw, int scanNumber)
@@ -442,7 +447,7 @@ namespace IO.Thermo
 
             if (tryy == -1)
             {
-                tryy = AttemptToFindMonoisotopicMZ(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetSelectedIonIntensity(spectrumNumber));
+                tryy = AttemptToFindMonoisotopicMZ(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber));
             }
 
             peak = ms1Spectrum.GetClosestPeak(tryy);

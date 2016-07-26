@@ -89,27 +89,12 @@ namespace IO.Thermo
 
         }
 
-        public double GetNoise(int index)
-        {
-            return _noises == null ? 0 : _noises[index];
-        }
-
         public double GetSignalToNoise(int index)
         {
             if (_noises == null)
                 return double.NaN;
             double noise = _noises[index];
             return xArray[index] / noise;
-        }
-
-        public int GetCharge(int index)
-        {
-            return _charges == null ? 0 : _charges[index];
-        }
-
-        public double GetResolution(int index)
-        {
-            return _resolutions == null ? 0 : _resolutions[index];
         }
 
         public double[] GetNoises()
