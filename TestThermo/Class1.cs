@@ -47,7 +47,7 @@ namespace TestThermo
 
             Assert.AreEqual("1.3", a.GetSofwareVersion());
             double ya;
-            a.GetScan(948).TryGetSelectedIonGuessIsolationIntensity(out ya);
+            a.GetScan(948).TryGetSelectedIonGuessIntensity(out ya);
             Assert.AreEqual(4125760, ya);
 
             Assert.AreEqual("LCQ", a.GetInstrumentName());
