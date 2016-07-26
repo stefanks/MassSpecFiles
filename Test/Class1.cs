@@ -60,6 +60,9 @@ namespace Test
             Mzml okay = new Mzml(@"myFakeFile.mzML");
             okay.Open();
             okay.GetScan(2);
+
+            Assert.AreEqual(1, okay.GetSpectrumNumber(1));
+            Assert.AreEqual(2, okay.GetSpectrumNumber(2));
         }
 
         private DefaultMzSpectrum createMS2spectrum(IEnumerable<Fragment> fragments, int v1, int v2)

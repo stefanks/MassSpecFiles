@@ -496,11 +496,6 @@ namespace IO.MzML
 
         }
 
-        private MzRange GetIsolationRange(int spectrumNumber)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override MsDataScan<DefaultMzSpectrum> GetMsDataScanFromFile(int spectrumNumber)
         {
 
@@ -881,11 +876,8 @@ namespace IO.MzML
                 //_indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].binaryDataArrayList.binaryDataArray[1].cvParam[0].name = "zlib compression";
             }
 
-            if (outputFile == null)
-                Mzml.Write(Path.Combine(Path.GetDirectoryName(myMsDataFile.FilePath), Path.GetFileNameWithoutExtension(myMsDataFile.FilePath)) + ".mzML", _indexedmzMLConnection);
+            Mzml.Write(Path.Combine(Path.GetDirectoryName(myMsDataFile.FilePath), Path.GetFileNameWithoutExtension(myMsDataFile.FilePath)) + ".mzML", _indexedmzMLConnection);
 
-            else
-                Mzml.Write(outputFile, _indexedmzMLConnection);
         }
 
     }
