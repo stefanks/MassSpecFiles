@@ -95,6 +95,9 @@ namespace TestThermo
             var newSpectrum = new ThermoSpectrum(a.GetScan(51).MassSpectrum);
             Assert.AreEqual(152.69 / 5574.8, newSpectrum.GetSignalToNoise(1), 0.01);
 
+
+            Assert.AreEqual(1, newSpectrum.GetCharges()[1]);
+            Assert.AreEqual(102604, newSpectrum.GetResolutions()[1]);
         }
     }
 }

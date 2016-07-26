@@ -102,16 +102,6 @@ namespace IO.Thermo
             return xArray[index] / noise;
         }
 
-        public int GetCharge(int index)
-        {
-            return _charges == null ? 0 : _charges[index];
-        }
-
-        public double GetResolution(int index)
-        {
-            return _resolutions == null ? 0 : _resolutions[index];
-        }
-
         public double[] GetNoises()
         {
             return _noises;
