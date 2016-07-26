@@ -208,7 +208,7 @@ namespace IO.Thermo
             return peak.MZ;
         }
 
-        private double AttemptToFindMonoisotopicMZ(ThermoSpectrum ms1Spectrum, double isolationMZ, int charge)
+        public double AttemptToFindMonoisotopicMZ(ThermoSpectrum ms1Spectrum, double isolationMZ, int charge)
         {
             double checkPeak = isolationMZ;
             MzPeak goodPeak = ms1Spectrum.GetClosestPeak(isolationMZ);
