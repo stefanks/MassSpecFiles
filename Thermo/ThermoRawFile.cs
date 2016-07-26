@@ -452,7 +452,7 @@ namespace IO.Thermo
 
             if (tryy == -1)
             {
-                tryy = AttemptToFindMonoisotopicMZ(ms1Spectrum, GetIsolationMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetSelectedIonIntensity(spectrumNumber));
+                tryy = AttemptToFindMonoisotopicMZ(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber), GetSelectedIonIntensity(spectrumNumber));
             }
 
             peak = ms1Spectrum.GetClosestPeak(tryy);
