@@ -195,20 +195,14 @@ namespace IO.Thermo
         {
             int parentScanNumber = GetParentSpectrumNumber(spectrumNumber);
             var ms1Spectrum = GetScan(parentScanNumber).MassSpectrum;
-            var tryy = GetPrecursorMonoisotopicMZfromTrailierExtra(_rawConnection, spectrumNumber);
-            MzPeak peak = null;
-
-            if (tryy == -1)
-            {
-                tryy = AttemptToFindMonoisotopicMZ(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber));
-            }
-
-            peak = ms1Spectrum.GetClosestPeak(tryy);
-
-            return peak.MZ;
+            double trailerMZ = GetPrecursorMonoisotopicMZfromTrailierExtra(spectrumNumber);
+            if (trailerMZ == -1)
+                return AttemptToFindMonoisotopicPeak(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber)).MZ;
+            else
+                return AttemptToFindMonoisotopicPeak(ms1Spectrum, trailerMZ, GetPrecusorCharge(spectrumNumber)).MZ;
         }
 
-        public double AttemptToFindMonoisotopicMZ(ThermoSpectrum ms1Spectrum, double isolationMZ, int charge)
+        public MzPeak AttemptToFindMonoisotopicPeak(ThermoSpectrum ms1Spectrum, double isolationMZ, int charge)
         {
             double checkPeak = isolationMZ;
             MzPeak goodPeak = ms1Spectrum.GetClosestPeak(isolationMZ);
@@ -220,7 +214,7 @@ namespace IO.Thermo
                 var a = Math.Abs(peak.MZ - checkPeak);
                 var b = peak.Intensity;
                 // HACK
-                if (a < 0.01 && b >= checkIntensity / 2)
+                if (a < 0.01 && b >= checkIntensity / 5)
                 {
                     goodPeak = peak;
                     checkIntensity = b;
@@ -228,15 +222,15 @@ namespace IO.Thermo
                 else
                     break;
             }
-            return goodPeak.MZ;
+            return goodPeak;
         }
 
-        private static double GetPrecursorMonoisotopicMZfromTrailierExtra(IXRawfile2 raw, int scanNumber)
+        private double GetPrecursorMonoisotopicMZfromTrailierExtra(int scanNumber)
         {
             object labels_obj = null;
             object values_obj = null;
             int array_size = -1;
-            raw.GetTrailerExtraForScanNum(scanNumber, ref labels_obj, ref values_obj, ref array_size);
+            _rawConnection.GetTrailerExtraForScanNum(scanNumber, ref labels_obj, ref values_obj, ref array_size);
             string[] labels = (string[])labels_obj;
             string[] values = (string[])values_obj;
             for (int i = labels.GetLowerBound(0); i <= labels.GetUpperBound(0); i++)
@@ -245,13 +239,9 @@ namespace IO.Thermo
                 {
                     double monoisotopic_mz = double.Parse(values[i], CultureInfo.InvariantCulture);
                     if (monoisotopic_mz > 0.0)
-                    {
                         return monoisotopic_mz;
-                    }
                     else
-                    {
-                        break;
-                    }
+                        return -1;
                 }
             }
             return -1;
@@ -442,17 +432,11 @@ namespace IO.Thermo
         {
             int parentScanNumber = GetParentSpectrumNumber(spectrumNumber);
             var ms1Spectrum = GetScan(parentScanNumber).MassSpectrum;
-            var tryy = GetPrecursorMonoisotopicMZfromTrailierExtra(_rawConnection, spectrumNumber);
-            MzPeak peak = null;
-
-            if (tryy == -1)
-            {
-                tryy = AttemptToFindMonoisotopicMZ(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber));
-            }
-
-            peak = ms1Spectrum.GetClosestPeak(tryy);
-
-            return peak.Intensity;
+            double trailerMZ = GetPrecursorMonoisotopicMZfromTrailierExtra(spectrumNumber);
+            if (trailerMZ == -1)
+                return AttemptToFindMonoisotopicPeak(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber)).Intensity;
+            else
+                return AttemptToFindMonoisotopicPeak(ms1Spectrum, trailerMZ, GetPrecusorCharge(spectrumNumber)).Intensity;
         }
 
         private double GetSelectedIonMZ(int spectrumNumber)
