@@ -383,14 +383,12 @@ namespace IO.Thermo
         private int GetPrecursor(int spectrumNumber)
         {
             int ms_order = -1;
-            while (spectrumNumber >= 1)
+            while (spectrumNumber >= 1 && ms_order != 1)
             {
                 _rawConnection.GetMSOrderForScanNum(spectrumNumber, ref ms_order);
-                if (ms_order == 1)
-                    return spectrumNumber;
                 spectrumNumber--;
             }
-            return spectrumNumber;
+            return spectrumNumber + 1;
         }
 
         protected override MsDataScan<ThermoSpectrum> GetMsDataScanFromFile(int spectrumNumber)
