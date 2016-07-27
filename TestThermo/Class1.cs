@@ -58,7 +58,7 @@ namespace TestThermo
             Assert.AreEqual(1, a.GetMSXPrecursors(1290).Count);
             Assert.AreEqual(1194.53, a.GetMSXPrecursors(1290).First());
 
-            MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(a);
+            MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(a, Path.Combine(Path.GetDirectoryName(a.FilePath), Path.GetFileNameWithoutExtension(a.FilePath)) + ".mzML");
         }
 
 
