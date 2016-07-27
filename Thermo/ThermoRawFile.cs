@@ -239,13 +239,9 @@ namespace IO.Thermo
                 {
                     double monoisotopic_mz = double.Parse(values[i], CultureInfo.InvariantCulture);
                     if (monoisotopic_mz > 0.0)
-                    {
                         return monoisotopic_mz;
-                    }
                     else
-                    {
-                        break;
-                    }
+                        return -1;
                 }
             }
             return -1;

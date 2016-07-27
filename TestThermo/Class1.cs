@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Spectra;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace TestThermo
 {
@@ -53,6 +54,9 @@ namespace TestThermo
             Assert.AreEqual("LCQ", a.GetInstrumentName());
             Assert.AreEqual("LCQ", a.GetInstrumentModel());
 
+            Assert.AreEqual(0, a.GetMSXPrecursors(1289).Count);
+            Assert.AreEqual(1, a.GetMSXPrecursors(1290).Count);
+            Assert.AreEqual(1194.53, a.GetMSXPrecursors(1290).First());
 
             MzmlMethods.CreateAndWriteMyIndexedMZmlwithCalibratedSpectra(a);
         }
@@ -100,7 +104,8 @@ namespace TestThermo
             Assert.AreEqual(102604, newSpectrum.GetResolutions()[1]);
 
 
-            Assert.AreEqual(1122, a.AttemptToFindMonoisotopicMZ(a.GetScan(148).MassSpectrum, 1125, 1), 0.01);
+            Assert.AreEqual(1122, a.AttemptToFindMonoisotopicPeak(a.GetScan(148).MassSpectrum, 1125, 1).MZ, 0.01);
+
         }
     }
 }
