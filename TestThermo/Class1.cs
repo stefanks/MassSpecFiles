@@ -21,7 +21,7 @@ namespace TestThermo
         [Test]
         public void LoadThermoTest()
         {
-            ThermoRawFile a = new ThermoRawFile(@"Shew_246a_LCQa_15Oct04_Andro_0904-2_4-20.RAW");
+            ThermoRawFile a = new ThermoRawFile(@"Shew_246a_LCQa_15Oct04_Andro_0904-2_4-20.RAW", true);
             a.Open();
             a.Open();
             Assert.AreEqual(1, a.FirstSpectrumNumber);
@@ -65,13 +65,13 @@ namespace TestThermo
         [Test]
         public void ThermoLoadError()
         {
-            ThermoRawFile a = new ThermoRawFile(@"aaa.RAW");
+            ThermoRawFile a = new ThermoRawFile(@"aaa.RAW", false);
             Assert.Throws<IOException>(() => { a.Open(); });
         }
         [Test]
         public void LoadThermoTest2()
         {
-            ThermoRawFile a = new ThermoRawFile(@"05-13-16_cali_MS_60K-res_MS.raw");
+            ThermoRawFile a = new ThermoRawFile(@"05-13-16_cali_MS_60K-res_MS.raw", false);
             a.Open();
             Assert.AreEqual(360, a.LastSpectrumNumber);
             var ok = a.GetScan(1).MassSpectrum.GetNoises();

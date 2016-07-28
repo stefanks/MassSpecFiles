@@ -67,9 +67,12 @@ namespace IO.Thermo
 
         private IXRawfile5 _rawConnection;
 
-        public ThermoRawFile(string filePath)
+        private bool trustTrailer;
+
+        public ThermoRawFile(string filePath, bool trustTrailer)
             : base(filePath, true, MsDataFileType.ThermoRawFile)
         {
+            this.trustTrailer = trustTrailer;
         }
 
         public override void Open()
@@ -199,7 +202,12 @@ namespace IO.Thermo
             if (trailerMZ == -1)
                 return AttemptToFindMonoisotopicPeak(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber)).MZ;
             else
-                return AttemptToFindMonoisotopicPeak(ms1Spectrum, trailerMZ, GetPrecusorCharge(spectrumNumber)).MZ;
+            {
+                if (trustTrailer)
+                    return ms1Spectrum.GetClosestPeak(trailerMZ).MZ;
+                else
+                    return AttemptToFindMonoisotopicPeak(ms1Spectrum, trailerMZ, GetPrecusorCharge(spectrumNumber)).MZ;
+            }
         }
 
         public MzPeak AttemptToFindMonoisotopicPeak(ThermoSpectrum ms1Spectrum, double isolationMZ, int charge)
@@ -434,7 +442,12 @@ namespace IO.Thermo
             if (trailerMZ == -1)
                 return AttemptToFindMonoisotopicPeak(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber)).Intensity;
             else
-                return AttemptToFindMonoisotopicPeak(ms1Spectrum, trailerMZ, GetPrecusorCharge(spectrumNumber)).Intensity;
+            {
+                if (trustTrailer)
+                    return ms1Spectrum.GetClosestPeak(trailerMZ).Intensity;
+                else
+                    return AttemptToFindMonoisotopicPeak(ms1Spectrum, trailerMZ, GetPrecusorCharge(spectrumNumber)).Intensity;
+            }
         }
 
         private double GetSelectedIonMZ(int spectrumNumber)
