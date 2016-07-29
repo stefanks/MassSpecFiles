@@ -102,10 +102,6 @@ namespace TestThermo
 
             Assert.AreEqual(1, newSpectrum.GetCharges()[1]);
             Assert.AreEqual(102604, newSpectrum.GetResolutions()[1]);
-
-
-            //Assert.AreEqual(1122, a.AttemptToFindMonoisotopicPeak(a.GetScan(148).MassSpectrum, 1125, 1).MZ, 0.01);
-
         }
     }
 }
