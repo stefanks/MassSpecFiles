@@ -67,12 +67,9 @@ namespace IO.Thermo
 
         private IXRawfile5 _rawConnection;
 
-        private bool trustTrailer;
-
-        public ThermoRawFile(string filePath, bool trustTrailer)
+        public ThermoRawFile(string filePath)
             : base(filePath, true, MsDataFileType.ThermoRawFile)
         {
-            this.trustTrailer = trustTrailer;
         }
 
         public override void Open()
@@ -200,55 +197,11 @@ namespace IO.Thermo
             var ms1Spectrum = GetScan(parentScanNumber).MassSpectrum;
             double trailerMZ = GetPrecursorMonoisotopicMZfromTrailierExtra(spectrumNumber);
             if (trailerMZ == -1)
-                return AttemptToFindMonoisotopicPeak(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber)).MZ;
+                return GetSelectedIonMZ(spectrumNumber);
             else
             {
-                if (trustTrailer)
-                    return ms1Spectrum.GetClosestPeak(trailerMZ).MZ;
-                else
-                    return AttemptToFindMonoisotopicPeak(ms1Spectrum, trailerMZ, GetPrecusorCharge(spectrumNumber)).MZ;
+                return ms1Spectrum.GetClosestPeak(trailerMZ).MZ;
             }
-        }
-
-        public MzPeak AttemptToFindMonoisotopicPeak(ThermoSpectrum ms1Spectrum, double startMZ, int charge)
-        {
-            double checkPeak = startMZ;
-            double checkPeak2 = startMZ;
-            MzPeak goodPeak = ms1Spectrum.GetClosestPeak(startMZ);
-            double checkIntensity = goodPeak.Intensity;
-            double worstA = 0.0005;
-            double worstA2 = 0.0005;
-
-            int i = 0;
-            while (true)
-            {
-                i++;
-                checkPeak = checkPeak - 1.003 / charge;
-                checkPeak2 = goodPeak.MZ - 1.003 / charge;
-                var peak = ms1Spectrum.GetClosestPeak(checkPeak);
-                var a = Math.Abs(peak.MZ - checkPeak);
-                var a2 = Math.Abs(peak.MZ - checkPeak2);
-                var b = peak.Intensity;
-                // HACK
-                if (a < worstA * 3 && a2 < worstA2 * 3 && b >= checkIntensity / 5)
-                {
-                    goodPeak = peak;
-                    checkIntensity = b;
-                    if (i == 1)
-                    {
-                        worstA = a;
-                        worstA2 = a2;
-                    }
-                    else
-                    {
-                        worstA = Math.Max(a, worstA);
-                        worstA2 = Math.Max(a2, worstA2);
-                    }
-                }
-                else
-                    break;
-            }
-            return goodPeak;
         }
 
         private double GetPrecursorMonoisotopicMZfromTrailierExtra(int scanNumber)
@@ -458,13 +411,10 @@ namespace IO.Thermo
             var ms1Spectrum = GetScan(parentScanNumber).MassSpectrum;
             double trailerMZ = GetPrecursorMonoisotopicMZfromTrailierExtra(spectrumNumber);
             if (trailerMZ == -1)
-                return AttemptToFindMonoisotopicPeak(ms1Spectrum, GetSelectedIonMZ(spectrumNumber), GetPrecusorCharge(spectrumNumber)).Intensity;
+                return GetSelectedIonIntensity(spectrumNumber);
             else
             {
-                if (trustTrailer)
-                    return ms1Spectrum.GetClosestPeak(trailerMZ).Intensity;
-                else
-                    return AttemptToFindMonoisotopicPeak(ms1Spectrum, trailerMZ, GetPrecusorCharge(spectrumNumber)).Intensity;
+                return ms1Spectrum.GetClosestPeak(trailerMZ).Intensity;
             }
         }
 
