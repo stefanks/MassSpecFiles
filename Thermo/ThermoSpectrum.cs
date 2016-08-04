@@ -146,9 +146,16 @@ namespace IO.Thermo
         {
 
             int index = GetClosestPeakIndex(minMZ);
+            if (this[index].X < minMZ)
+                index++;
             int index2 = GetClosestPeakIndex(maxMZ);
+            if (this[index2].X > maxMZ)
+                index2--;
 
             int count = 1 + index2 - index;
+            if (count <= 0)
+                return new ThermoSpectrum(new double[5, 0]);
+
             double[] mz = new double[count];
             double[] intensity = new double[count];
             int[] charges = new int[count];
