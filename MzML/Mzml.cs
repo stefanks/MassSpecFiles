@@ -38,8 +38,9 @@ namespace IO.MzML
         private static string _ionInjectionTime = "MS:1000927";
         private static string _mzArray = "MS:1000514";
         private static string _intensityArray = "MS:1000515";
-        private const string _CID = "MS:1001880";
-        private const string _HCD = "MS:1000422";
+        private const string _CID = "MS:1000133";
+        private const string _ISCID = "MS:1001880";
+        private const string _BTCID = "MS:1000422";
         private const string _ETD = "MS:1000598";
         private const string _MPD = "MS:1000435";
         private const string _ECD = "MS:1000250";
@@ -123,8 +124,10 @@ namespace IO.MzML
                 switch (cv.accession)
                 {
                     case _CID:
-                        return DissociationType.CI;
-                    case _HCD:
+                        return DissociationType.CID;
+                    case _ISCID:
+                        return DissociationType.ISCID;
+                    case _BTCID:
                         return DissociationType.HCD;
                     case _ETD:
                         return DissociationType.ETD;
@@ -556,7 +559,7 @@ namespace IO.MzML
             if (GetMsnOrder(spectrumNumber + 1) == 1)
                 return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetScanWindowMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetMzAnalyzer(spectrumNumber + 1), GetInjectionTime(spectrumNumber + 1), GetTotalIonCurrent(spectrumNumber + 1));
             else
-                return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetScanWindowMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetMzAnalyzer(spectrumNumber + 1), GetInjectionTime(spectrumNumber + 1), GetTotalIonCurrent(spectrumNumber + 1), GetPrecursorID(spectrumNumber + 1), GetPrecursorMz(spectrumNumber + 1), GetPrecusorCharge(spectrumNumber + 1), GetPrecursorIntensity(spectrumNumber + 1), GetIsolationMz(spectrumNumber + 1), GetIsolationWidth(spectrumNumber + 1), GetDissociationType(spectrumNumber + 1), GetPrecursorScanNumber(spectrumNumber + 1),  GetPrecursorMonoisotopicIntensity(spectrumNumber + 1),GetPrecursorMonoisotopicMZ(spectrumNumber + 1));
+                return new MsDataScan<DefaultMzSpectrum>(spectrumNumber, ok, GetSpectrumID(spectrumNumber + 1), GetMsnOrder(spectrumNumber + 1), GetIsCentroid(spectrumNumber + 1), GetPolarity(spectrumNumber + 1), GetRetentionTime(spectrumNumber + 1), GetScanWindowMzRange(spectrumNumber + 1), GetScanFilter(spectrumNumber + 1), GetMzAnalyzer(spectrumNumber + 1), GetInjectionTime(spectrumNumber + 1), GetTotalIonCurrent(spectrumNumber + 1), GetPrecursorID(spectrumNumber + 1), GetPrecursorMz(spectrumNumber + 1), GetPrecusorCharge(spectrumNumber + 1), GetPrecursorIntensity(spectrumNumber + 1), GetIsolationMz(spectrumNumber + 1), GetIsolationWidth(spectrumNumber + 1), GetDissociationType(spectrumNumber + 1), GetPrecursorScanNumber(spectrumNumber + 1), GetPrecursorMonoisotopicIntensity(spectrumNumber + 1), GetPrecursorMonoisotopicMZ(spectrumNumber + 1));
 
         }
 
@@ -769,6 +772,10 @@ namespace IO.MzML
                             _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].accession = "MS:1000422";
                             _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].name = "beam-type collision-induced dissociation";
                             break;
+                        case DissociationType.CID:
+                            _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].accession = "MS:1000133";
+                            _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].name = "collision-induced dissociation";
+                            break;
                         case DissociationType.Unknown:
                             _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].accession = "MS:1000044";
                             _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].precursorList.precursor[0].activation.cvParam[0].name = "dissociation method";
@@ -788,9 +795,15 @@ namespace IO.MzML
                 // Centroid?
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[2] = new Generated.CVParamType();
                 if (myMsDataFile.GetScan(i + myMsDataFile.FirstSpectrumNumber).isCentroid)
+                {
+                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[2].name = "centroid spectrum";
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[2].accession = "MS:1000127";
+                }
                 else
+                {
+                    _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[2].name = "profile spectrum";
                     _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[2].accession = "MS:1000128";
+                }
 
                 // Polarity
                 _indexedmzMLConnection.mzML.run.spectrumList.spectrum[i].cvParam[3] = new Generated.CVParamType();
