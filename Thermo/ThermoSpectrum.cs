@@ -94,7 +94,7 @@ namespace IO.Thermo
             if (_noises == null)
                 return double.NaN;
             double noise = _noises[index];
-            return xArray[index] / noise;
+            return yArray[index] / noise;
         }
 
         public double[] GetNoises()

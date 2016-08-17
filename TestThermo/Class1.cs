@@ -97,11 +97,16 @@ namespace TestThermo
             Assert.AreEqual(2.788433333, cromatogram.GetApex(0, 5).Time, 0.0001);
 
             var newSpectrum = new ThermoSpectrum(a.GetScan(51).MassSpectrum);
-            Assert.AreEqual(152.69 / 5574.8, newSpectrum.GetSignalToNoise(1), 0.01);
+            Assert.AreEqual(22246 / 5574.8, newSpectrum.GetSignalToNoise(1), 0.01);
 
 
             Assert.AreEqual(1, newSpectrum.GetCharges()[1]);
             Assert.AreEqual(102604, newSpectrum.GetResolutions()[1]);
+
+            Assert.AreEqual(181, newSpectrum.newSpectrumExtract(500, 1000).Count);
+
+            Assert.AreEqual(0, newSpectrum.newSpectrumExtract(-3,-2).Count);
+
         }
     }
 }
