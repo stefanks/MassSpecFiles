@@ -40,7 +40,7 @@ namespace IO.MzML
         private static string _intensityArray = "MS:1000515";
         private const string _CID = "MS:1000133";
         private const string _ISCID = "MS:1001880";
-        private const string _BTCID = "MS:1000422";
+        private const string _HCD = "MS:1000422";
         private const string _ETD = "MS:1000598";
         private const string _MPD = "MS:1000435";
         private const string _ECD = "MS:1000250";
@@ -127,7 +127,7 @@ namespace IO.MzML
                         return DissociationType.CID;
                     case _ISCID:
                         return DissociationType.ISCID;
-                    case _BTCID:
+                    case _HCD:
                         return DissociationType.HCD;
                     case _ETD:
                         return DissociationType.ETD;
