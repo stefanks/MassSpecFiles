@@ -105,8 +105,11 @@ namespace TestThermo
 
             Assert.AreEqual(181, newSpectrum.newSpectrumExtract(500, 1000).Count);
 
-            Assert.AreEqual(0, newSpectrum.newSpectrumExtract(-3,-2).Count);
+            Assert.AreEqual(0, newSpectrum.newSpectrumExtract(-3, -2).Count);
 
+            var hm = newSpectrum.newSpectrumExtract(501, 502);
+
+            Assert.AreEqual(0, hm.Count);
         }
     }
 }
