@@ -16,6 +16,7 @@
 // License along with MassSpecFiles. If not, see <http://www.gnu.org/licenses/>.
 
 using MassSpectrometry;
+using Spectra;
 using System;
 using System.IO;
 using System.Linq;
@@ -43,7 +44,6 @@ namespace MzIdentML
         public int chargeState(int matchIndex)
         {
             return dd.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[matchIndex].SpectrumIdentificationItem[0].chargeState;
-
         }
 
         public double experimentalMassToCharge(int matchIndex)
@@ -51,9 +51,34 @@ namespace MzIdentML
             return dd.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult[matchIndex].SpectrumIdentificationItem[0].experimentalMassToCharge;
         }
 
-        public int Count()
+        public Tolerance parentTolerance
         {
-            return dd.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult.Count();
+            get
+            {
+                var hm = dd.AnalysisProtocolCollection.SpectrumIdentificationProtocol[0].ParentTolerance;
+                if (hm[0].unitName.Equals("dalton"))
+                    return new Tolerance(ToleranceUnit.Absolute, Convert.ToDouble(hm[0].value));
+                else
+                    return new Tolerance(ToleranceUnit.PPM, Convert.ToDouble(hm[0].value));
+            }
+        }
+        public Tolerance fragmentTolerance
+        {
+            get
+            {
+                var hm = dd.AnalysisProtocolCollection.SpectrumIdentificationProtocol[0].FragmentTolerance;
+                if (hm[0].unitName.Equals("dalton"))
+                    return new Tolerance(ToleranceUnit.Absolute, Convert.ToDouble(hm[0].value));
+                else
+                    return new Tolerance(ToleranceUnit.PPM, Convert.ToDouble(hm[0].value));
+            }
+        }
+        public int Count
+        {
+            get
+            {
+                return dd.DataCollection.AnalysisData.SpectrumIdentificationList[0].SpectrumIdentificationResult.Count();
+            }
         }
 
         public bool isDecoy(int matchIndex)
